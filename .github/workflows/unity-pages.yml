@@ -1,0 +1,49 @@
+# GitHub Actions workflow for Unity WebGL CI/CD to GitHub Pages
+# - Builds the Unity WebGL project
+# - Deploys /Build/WebGL to GitHub Pages
+
+name: Build and Deploy Unity WebGL to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Cache Library
+        uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-${{ runner.os }}-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
+          restore-keys: |
+            Library-
+
+      - name: Set up Unity
+        uses: game-ci/unity-setup@v3
+        with:
+          unityVersion: 2022.3.0f1 # Set to your Unity version
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build WebGL
+        uses: game-ci/unity-builder@v3
+        with:
+          targetPlatform: WebGL
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: build/WebGL/WebGL
+          publish_branch: gh-pages
+          force_orphan: true

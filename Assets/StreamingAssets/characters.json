@@ -1,0 +1,53 @@
+{
+  "characters": [
+    {
+      "name": "Olivia Rodrigo",
+      "description": "Pop sensation with perfect balance",
+      "speedBonus": 5,
+      "healthBonus": 0,
+      "jumpBonus": 0
+    },
+    {
+      "name": "P!nk",
+      "description": "Fearless performer with extra health",
+      "speedBonus": 0,
+      "healthBonus": 20,
+      "jumpBonus": 10
+    },
+    {
+      "name": "Taylor Swift",
+      "description": "Strategic rider with balanced stats",
+      "speedBonus": 3,
+      "healthBonus": 10,
+      "jumpBonus": 3
+    },
+    {
+      "name": "Billie Eilish",
+      "description": "Unique style with stealth bonus",
+      "speedBonus": 2,
+      "healthBonus": 5,
+      "jumpBonus": 8
+    },
+    {
+      "name": "Lizzo",
+      "description": "Powerful presence with extra durability",
+      "speedBonus": -2,
+      "healthBonus": 30,
+      "jumpBonus": -5
+    },
+    {
+      "name": "Claire",
+      "description": "Acrobatic riding style",
+      "speedBonus": 8,
+      "healthBonus": -5,
+      "jumpBonus": 15
+    },
+    {
+      "name": "Maddy",
+      "description": "All-around skilled rider",
+      "speedBonus": 5,
+      "healthBonus": 5,
+      "jumpBonus": 5
+    }
+  ]
+}
