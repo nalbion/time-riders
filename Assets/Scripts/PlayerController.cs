@@ -10,8 +10,12 @@ public class PlayerController : MonoBehaviour
     public CharacterData characterData;
     
     [Header("Movement Settings")]
-    public float maxSpeed = 100f;
-    public float acceleration = 10f;
+    public float maxSpeed = 500f; // Much more powerful for racing bike
+    public float acceleration = 50f; // Controls how quickly throttle ramps up
+
+    [Header("Bike Stability")]
+    public float selfRightingStrength = 4f;
+    public float bankingStrength = 8f;
     public float braking = 15f;
     public float turnSpeed = 180f;
     public float jumpForce = 500f;
@@ -67,6 +71,31 @@ public class PlayerController : MonoBehaviour
         CheckGrounded();
         currentSpeed = rb.linearVelocity.magnitude * 3.6f; // Convert to km/h
         Debug.Log($"[PlayerController] Speed: {currentSpeed:F2} km/h, MotorInput: {motorInput:F2}");
+
+        ApplyBankingAndStability();
+    }
+    
+    void ApplyBankingAndStability()
+    {
+        // --- Strong upright force to keep bike from falling over ---
+        Vector3 localUp = transform.up;
+        Vector3 uprightTorque = Vector3.Cross(localUp, Vector3.up);
+        rb.AddTorque(uprightTorque * selfRightingStrength * 10f, ForceMode.Acceleration); // much stronger
+
+        // --- Clamp Z rotation (lean/bank) to [-45, 45] degrees ---
+        Vector3 euler = transform.eulerAngles;
+        float z = euler.z;
+        if (z > 180f) z -= 360f;
+        z = Mathf.Clamp(z, -45f, 45f);
+        euler.z = z;
+        transform.eulerAngles = euler;
+
+        // --- Gentle banking into corners ---
+        float targetBank = -steerInput * Mathf.Clamp(currentSpeed / 60f, 0f, 1f) * 15f; // up to 15 degrees
+        Quaternion targetRotation = Quaternion.Euler(0f, transform.eulerAngles.y, targetBank);
+        Quaternion currentRotation = transform.rotation;
+        Quaternion desiredRotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * bankingStrength);
+        rb.MoveRotation(desiredRotation);
     }
     
     void FixedUpdate()
@@ -78,11 +107,11 @@ public class PlayerController : MonoBehaviour
     
     void HandleInput()
     {
+        float targetMotorInput = 0f;
+        steerInput = 0f;
         if (playerNumber == 1)
         {
             // Player 1 - WASD keys
-            motorInput = 0f;
-            steerInput = 0f;
             // WASD logging
             if (Keyboard.current.wKey.wasPressedThisFrame)
                 Debug.Log("W pressed");
@@ -101,8 +130,8 @@ public class PlayerController : MonoBehaviour
             if (Keyboard.current.dKey.wasReleasedThisFrame)
                 Debug.Log("D released");
 
-            if (Keyboard.current.wKey.isPressed) motorInput += 1f;
-            if (Keyboard.current.sKey.isPressed) motorInput -= 1f;
+            if (Keyboard.current.wKey.isPressed) targetMotorInput += 1f;
+            if (Keyboard.current.sKey.isPressed) targetMotorInput -= 1f;
             if (Keyboard.current.aKey.isPressed) steerInput -= 1f;
             if (Keyboard.current.dKey.isPressed) steerInput += 1f;
             
@@ -114,10 +143,8 @@ public class PlayerController : MonoBehaviour
         else if (playerNumber == 2)
         {
             // Player 2 - IJKL keys
-            motorInput = 0f;
-            steerInput = 0f;
-            if (Keyboard.current.iKey.isPressed) motorInput += 1f;
-            if (Keyboard.current.kKey.isPressed) motorInput -= 1f;
+            if (Keyboard.current.iKey.isPressed) targetMotorInput += 1f;
+            if (Keyboard.current.kKey.isPressed) targetMotorInput -= 1f;
             if (Keyboard.current.jKey.isPressed) steerInput -= 1f;
             if (Keyboard.current.lKey.isPressed) steerInput += 1f;
             
@@ -138,8 +165,11 @@ public class PlayerController : MonoBehaviour
             float normalizedY = mouseOffset.y / (Screen.height / 2);
             
             steerInput = Mathf.Clamp(normalizedX, -1f, 1f);
-            motorInput = Mathf.Clamp(normalizedY, -1f, 1f);
+            targetMotorInput = Mathf.Clamp(normalizedY, -1f, 1f);
         }
+
+        // Gradual acceleration: smooth motorInput towards targetMotorInput
+        motorInput = Mathf.MoveTowards(motorInput, targetMotorInput, acceleration * Time.deltaTime);
     }
     
     void ApplyMotor()
