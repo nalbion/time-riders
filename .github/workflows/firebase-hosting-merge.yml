@@ -7,21 +7,27 @@ on:
     branches:
       - main
 jobs:
-  test-and-build:
+  build:
     uses: ./.github/workflows/unity-common.yml
     with:
       targetPlatform: WebGL
+    secrets:
+      UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
 
   deploy:
-    needs: test-and-build
+    needs: build
     name: Deploy to Firebase Hosting 🚀
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/download-artifact@v4
         with:
           name: build-WebGL
           path: build
+
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}

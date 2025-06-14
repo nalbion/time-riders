@@ -9,6 +9,13 @@ on:
       targetPlatform:
         required: true
         type: string
+    secrets:
+      UNITY_LICENSE:
+        required: true
+      UNITY_EMAIL:
+        required: true
+      UNITY_PASSWORD:
+        required: true
     outputs:
       build-path:
         description: "Path to build output"
