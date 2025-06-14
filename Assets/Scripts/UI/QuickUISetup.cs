@@ -25,8 +25,6 @@ public class QuickUISetup : MonoBehaviour {
         if (gm) {
             gm.mainMenuUI = buttonObj;
         }
-
-        AddInstructionsLabel(parent);
     }
 
     private GameObject CreateButtonObject(Transform parent) {
@@ -58,24 +56,6 @@ public class QuickUISetup : MonoBehaviour {
         text.color = Color.white;
         text.alignment = TextAlignmentOptions.Center;
         return text;
-    }
-
-    private void AddInstructionsLabel(Transform parent) {
-        GameObject instructionsObj = new GameObject("Instructions");
-        instructionsObj.transform.SetParent(parent);
-        RectTransform instructionsRect = instructionsObj.AddComponent<RectTransform>();
-        instructionsRect.anchorMin = new Vector2(0.5f, 0.5f);
-        instructionsRect.anchorMax = new Vector2(0.5f, 0.5f);
-        instructionsRect.pivot = new Vector2(0.5f, 1f);
-        instructionsRect.anchoredPosition = new Vector2(0, -60); // 60 pixels below button
-        instructionsRect.sizeDelta = new Vector2(500, 80);
-
-        TextMeshProUGUI instructionsText = instructionsObj.AddComponent<TextMeshProUGUI>();
-        instructionsText.text = "<b>Controls:</b>\nWASD / Arrow keys = Move\nSpace = Jump\nR = Reset Position\nEsc = Menu";
-        instructionsText.fontSize = 18;
-        instructionsText.color = Color.white;
-        instructionsText.alignment = TextAlignmentOptions.Top | TextAlignmentOptions.Center;
-        instructionsText.enableWordWrapping = true;
     }
 
     private void WireButtonEvents(Button button, GameObject buttonObj) {
