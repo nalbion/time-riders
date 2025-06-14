@@ -134,11 +134,11 @@ public class SceneSetup : MonoBehaviour {
 
         // --- Assign a WebGL-compatible material (Nature/Terrain/Standard) ---
         // Ensure you have a Resources/StandardTerrainMaterial.mat using Nature/Terrain/Standard shader
-        Material terrainMat = Resources.Load<Material>("StandardTerrainMaterial");
-        if (terrainMat != null) {
-            // terrain.materialTemplate = terrainMat;
-        }
-        Debug.Log(terrainMat == null ? "Terrain material missing!" : "Terrain material loaded.");
+        // Material terrainMat = Resources.Load<Material>("StandardTerrainMaterial");
+        // if (terrainMat != null) {
+        //     // terrain.materialTemplate = terrainMat;
+        // }
+        // Debug.Log(terrainMat == null ? "Terrain material missing!" : "Terrain material loaded.");
 
         // --- Setup Terrain Layers (track and grass) ---
         // Load textures from Resources folder (Assets/Resources/dirt.png, grass.png)

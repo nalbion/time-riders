@@ -22,7 +22,10 @@ public class QuickPlayerSetup : MonoBehaviour
     /// Coroutine to align the player to the center of the terrain after it is created.
     /// </summary>
     System.Collections.IEnumerator AlignPlayerToTerrainNextFrame() {
-        yield return null; // Wait for one frame so terrain is created
+        // Wait until Terrain and TerrainCollider are both present
+        while (Terrain.activeTerrain == null || Terrain.activeTerrain.GetComponent<TerrainCollider>() == null) {
+            yield return null;
+        }
         GameObject player = GameObject.Find("Player1");
         if (Terrain.activeTerrain != null) {
             Bounds bounds = Terrain.activeTerrain.terrainData.bounds;

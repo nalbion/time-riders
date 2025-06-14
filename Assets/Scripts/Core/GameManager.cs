@@ -198,35 +198,29 @@ public class GameManager : MonoBehaviour
         float remainingTime = raceTimeLimit - currentRaceTime;
         int minutes = Mathf.FloorToInt(remainingTime / 60);
         int seconds = Mathf.FloorToInt(remainingTime % 60);
-        if (timerText != null)
-        {
+        if (timerText != null) {
             timerText.text = $"{minutes:00}:{seconds:00}";
         }
-        else
-        {
-            GameLogger.Warning("GameManager", "timerText is not assigned.");
-        }
+        // else {
+        //     GameLogger.Warning("GameManager", "timerText is not assigned.");
+        // }
         
         // Update player health, speed, and motor input if we have players
         if (players.Count > 0)
         {
             var player = players[0]; // Primary player
-            if (healthBar != null)
-            {
+            if (healthBar != null) {
                 healthBar.value = player.GetHealthPercentage();
             }
-            else
-            {
-                GameLogger.Warning("GameManager", "healthBar is not assigned.");
-            }
-            if (speedText != null)
-            {
+            // else {
+            //     GameLogger.Warning("GameManager", "healthBar is not assigned.");
+            // }
+            if (speedText != null) {
                 speedText.text = $"{player.GetSpeed():F0} km/h\nMotor: {player.GetMotorInput():F2}";
             }
-            else
-            {
-                GameLogger.Warning("GameManager", "speedText is not assigned.");
-            }
+            // else {
+            //     GameLogger.Warning("GameManager", "speedText is not assigned.");
+            // }
         }
     }
     
