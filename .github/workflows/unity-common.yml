@@ -1,14 +1,18 @@
-# GitHub Actions workflow for Unity WebGL CI/CD to GitHub Pages
-# - Builds the Unity WebGL project
-# - Deploys /Build/WebGL to GitHub Pages
+# Unity Common Build Workflow (Reusable)
+# This workflow builds and tests the Unity project and exposes the build artifact for downstream workflows.
 
-name: Build and Deploy Unity WebGL to GitHub Pages
+name: Unity Common Build
 
 on:
-  push:
-    branches:
-      - main
-  workflow_dispatch:
+  workflow_call:
+    inputs:
+      targetPlatform:
+        required: true
+        type: string
+    outputs:
+      build-path:
+        description: "Path to build output"
+        value: ${{ jobs.build.outputs.build-path }}
 
 jobs:
   testRunner:
@@ -66,12 +70,12 @@ jobs:
           name: Test results (${{ matrix.testMode }})
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
-  buildWebGL:
+  build:
     needs: testRunner
-    name: Build for WebGL 🖥️
+    name: Build Unity Project 🖥️
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
+    outputs:
+      build-path: ${{ steps.set-build-path.outputs.build-path }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -96,7 +100,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: Library
-          key: Library-build-WebGL
+          key: Library-build-${{ inputs.targetPlatform }}
           restore-keys: |
             Library-build-
             Library-
@@ -107,28 +111,13 @@ jobs:
           UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
-          targetPlatform: WebGL
+          targetPlatform: ${{ inputs.targetPlatform }}
+
+      - name: Set build output path
+        id: set-build-path
+        run: echo "build-path=build/${{ inputs.targetPlatform }}" >> $GITHUB_OUTPUT
 
       - uses: actions/upload-artifact@v4
         with:
-          name: build-WebGL
-          path: build/WebGL
-
-  deployPages:
-    needs: buildWebGL
-    name: Deploy to Github Pages 🚀
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: actions/download-artifact@v4
-        with:
-          name: build-WebGL
-          path: build
-
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: gh-pages
-          folder: build/WebGL
+          name: build-${{ inputs.targetPlatform }}
+          path: build/${{ inputs.targetPlatform }}
