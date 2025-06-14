@@ -71,7 +71,7 @@ jobs:
           path: ${{ steps.testRunner.outputs.artifactsPath }}
 
   build:
-    needs: testRunner
+    # needs: testRunner
     name: Build Unity Project 🖥️
     runs-on: ubuntu-latest
     outputs:
