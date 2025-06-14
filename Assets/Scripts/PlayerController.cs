@@ -34,6 +34,10 @@ public class PlayerController : MonoBehaviour
     private float steerInput;
     private bool isGrounded;
     private float currentSpeed;
+    // --- Coyote time (grace period for ground detection) ---
+    private float lastGroundedTime = 0f;
+    private const float coyoteTime = 0.15f; // 150ms grace period
+
     private Vector3 startPosition;
     private Quaternion startRotation;
     private GameManager gameManager;
@@ -74,22 +78,31 @@ public class PlayerController : MonoBehaviour
 
         ApplyBankingAndStability();
     }
+
+    // Helper to check if we should consider the bike grounded (with coyote time)
+    private bool IsEffectivelyGrounded()
+    {
+        return (isGrounded || (Time.time - lastGroundedTime < coyoteTime));
+    }
+
     
     void ApplyBankingAndStability()
     {
-        // --- Strong upright force to keep bike from falling over ---
-        Vector3 localUp = transform.up;
-        Vector3 uprightTorque = Vector3.Cross(localUp, Vector3.up);
-        rb.AddTorque(uprightTorque * selfRightingStrength * 10f, ForceMode.Acceleration); // much stronger
+        if (IsEffectivelyGrounded())
+        {
+            // --- Strong upright force to keep bike from falling over ---
+            Vector3 localUp = transform.up;
+            Vector3 uprightTorque = Vector3.Cross(localUp, Vector3.up);
+            rb.AddTorque(uprightTorque * selfRightingStrength * 10f, ForceMode.Acceleration); // much stronger
 
-        // --- Clamp Z rotation (lean/bank) to [-45, 45] degrees ---
-        Vector3 euler = transform.eulerAngles;
-        float z = euler.z;
-        if (z > 180f) z -= 360f;
-        z = Mathf.Clamp(z, -45f, 45f);
-        euler.z = z;
-        transform.eulerAngles = euler;
-
+            // --- Clamp Z rotation (lean/bank) to [-45, 45] degrees ---
+            Vector3 euler = transform.eulerAngles;
+            float z = euler.z;
+            if (z > 180f) z -= 360f;
+            z = Mathf.Clamp(z, -45f, 45f);
+            euler.z = z;
+            transform.eulerAngles = euler;
+        }
         // --- Gentle banking into corners ---
         float targetBank = -steerInput * Mathf.Clamp(currentSpeed / 60f, 0f, 1f) * 15f; // up to 15 degrees
         Quaternion targetRotation = Quaternion.Euler(0f, transform.eulerAngles.y, targetBank);
@@ -109,27 +122,8 @@ public class PlayerController : MonoBehaviour
     {
         float targetMotorInput = 0f;
         steerInput = 0f;
-        if (playerNumber == 1)
-        {
+        if (playerNumber == 1) {
             // Player 1 - WASD keys
-            // WASD logging
-            if (Keyboard.current.wKey.wasPressedThisFrame)
-                Debug.Log("W pressed");
-            if (Keyboard.current.wKey.wasReleasedThisFrame)
-                Debug.Log("W released");
-            if (Keyboard.current.sKey.wasPressedThisFrame)
-                Debug.Log("S pressed");
-            if (Keyboard.current.sKey.wasReleasedThisFrame)
-                Debug.Log("S released");
-            if (Keyboard.current.aKey.wasPressedThisFrame)
-                Debug.Log("A pressed");
-            if (Keyboard.current.aKey.wasReleasedThisFrame)
-                Debug.Log("A released");
-            if (Keyboard.current.dKey.wasPressedThisFrame)
-                Debug.Log("D pressed");
-            if (Keyboard.current.dKey.wasReleasedThisFrame)
-                Debug.Log("D released");
-
             if (Keyboard.current.wKey.isPressed) targetMotorInput += 1f;
             if (Keyboard.current.sKey.isPressed) targetMotorInput -= 1f;
             if (Keyboard.current.aKey.isPressed) steerInput -= 1f;
@@ -140,8 +134,7 @@ public class PlayerController : MonoBehaviour
                 Jump();
             }
         }
-        else if (playerNumber == 2)
-        {
+        else if (playerNumber == 2) {
             // Player 2 - IJKL keys
             if (Keyboard.current.iKey.isPressed) targetMotorInput += 1f;
             if (Keyboard.current.kKey.isPressed) targetMotorInput -= 1f;
@@ -155,8 +148,7 @@ public class PlayerController : MonoBehaviour
         }
         
         // Mouse control (accessibility option)
-        if (Mouse.current != null && Mouse.current.leftButton.isPressed)
-        {
+        if (Mouse.current != null && Mouse.current.leftButton.isPressed) {
             Vector3 mousePos = Mouse.current.position.ReadValue();
             Vector3 screenCenter = new Vector3(Screen.width / 2, Screen.height / 2, 0);
             
@@ -172,10 +164,16 @@ public class PlayerController : MonoBehaviour
         motorInput = Mathf.MoveTowards(motorInput, targetMotorInput, acceleration * Time.deltaTime);
     }
     
-    void ApplyMotor()
-    {
+    void ApplyMotor() {
+        float speed = rb.linearVelocity.magnitude;
         float motor = motorInput * maxSpeed;
         
+        // --- Uphill/low-speed boost ---
+        if (motorInput > 0f && speed < 5f)
+        {
+            // Add extra torque when nearly stopped
+            motor += 200f * (1f - (speed / 5f)); // scales down as speed increases
+        }
         // Apply terrain speed modifier
         TerrainType currentTerrain = GetCurrentTerrain();
         motor *= terrainSpeedModifiers[currentTerrain];
@@ -189,9 +187,11 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    void ApplySteering()
-    {
-        float steering = steerInput * turnSpeed;
+    void ApplySteering() {
+        float speed = rb.linearVelocity.magnitude;
+        // At low speed, increase steering influence (up to 3x at zero speed)
+        float steerMultiplier = Mathf.Lerp(3f, 1f, Mathf.Clamp01(speed / 8f));
+        float steering = steerInput * turnSpeed * steerMultiplier;
         
         foreach (WheelCollider wheel in wheelColliders)
         {
@@ -202,8 +202,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    void ApplyBraking()
-    {
+    void ApplyBraking() {
         float brake = 0f;
         
         if (motorInput == 0)
@@ -217,8 +216,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    void UpdateWheelMeshes()
-    {
+    void UpdateWheelMeshes() {
         for (int i = 0; i < wheelColliders.Length; i++)
         {
             if (i < wheelMeshes.Length && wheelMeshes[i])
@@ -233,8 +231,8 @@ public class PlayerController : MonoBehaviour
         }
     }
     
-    void CheckGrounded()
-    {
+    void CheckGrounded() {
+        bool wasGrounded = isGrounded;
         isGrounded = false;
         foreach (WheelCollider wheel in wheelColliders)
         {
@@ -244,18 +242,20 @@ public class PlayerController : MonoBehaviour
                 break;
             }
         }
-    }
-    
-    void Jump()
-    {
+        // If grounded, update last grounded time
         if (isGrounded)
         {
+            lastGroundedTime = Time.time;
+        }
+    }
+    
+    void Jump() {
+        if (IsEffectivelyGrounded()) {
             rb.AddForce(Vector3.up * jumpForce);
         }
     }
     
-    TerrainType GetCurrentTerrain()
-    {
+    TerrainType GetCurrentTerrain() {
         // Raycast down to determine terrain type and road
         RaycastHit hit;
         if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f))
@@ -283,74 +283,61 @@ public class PlayerController : MonoBehaviour
         return TerrainType.OffRoad; // Default to off-road
     }
     
-    public void TakeDamage(float damage)
-    {
+    public void TakeDamage(float damage) {
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         
         // Play crash sound
-        if (gameManager)
-        {
+        if (gameManager) {
             gameManager.PlaySFX(gameManager.GetComponent<GameManager>().sfxSource.clip);
         }
         
-        if (currentHealth <= 0)
-        {
+        if (currentHealth <= 0) {
             // Player is out of health - respawn or end race
             ResetToStartPosition();
             currentHealth = maxHealth;
         }
     }
     
-    public void ResetToStartPosition()
-    {
+    public void ResetToStartPosition() {
         transform.position = startPosition;
         transform.rotation = startRotation;
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }
     
-    public float GetHealthPercentage()
-    {
+    public float GetHealthPercentage() {
         return currentHealth / maxHealth;
     }
     
-    public float GetSpeed()
-    {
+    public float GetSpeed() {
         return currentSpeed;
     }
     
-    public float GetMotorInput()
-    {
+    public float GetMotorInput() {
         return motorInput;
     }
     
-    void OnTriggerEnter(Collider other)
-    {
+    void OnTriggerEnter(Collider other) {
         // Handle collisions with obstacles and NPCs
-        if (other.CompareTag("Obstacle"))
-        {
+        if (other.CompareTag("Obstacle")) {
             TakeDamage(20f);
             // Slow down the bike
             rb.linearVelocity *= 0.5f;
         }
-        else if (other.CompareTag("NPC"))
-        {
+        else if (other.CompareTag("NPC")) {
             TakeDamage(15f);
             rb.linearVelocity *= 0.7f;
         }
-        else if (other.CompareTag("Finish"))
-        {
-            if (gameManager)
-            {
+        else if (other.CompareTag("Finish")) {
+            if (gameManager) {
                 gameManager.EndRace();
             }
         }
     }
 }
 
-public enum TerrainType
-{
+public enum TerrainType {
     Bitumen,
     Gravel,
     Dirt,

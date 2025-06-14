@@ -123,8 +123,8 @@ public class QuickPlayerSetup : MonoBehaviour
     void ConfigureWheelCollider(WheelCollider wheel)
     {
         JointSpring spring = wheel.suspensionSpring;
-        spring.spring = 35000f;
-        spring.damper = 4500f;
+        spring.spring = 18000f; // was 35000f
+        spring.damper = 7000f; // was 4500f
         wheel.suspensionSpring = spring;
         
         wheel.suspensionDistance = 0.3f;
