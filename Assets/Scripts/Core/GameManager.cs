@@ -199,7 +199,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("GameManager: timerText is not assigned.");
+            GameLogger.Warning("GameManager", "timerText is not assigned.");
         }
         
         // Update player health, speed, and motor input if we have players
@@ -212,7 +212,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("GameManager: healthBar is not assigned.");
+                GameLogger.Warning("GameManager", "healthBar is not assigned.");
             }
             if (speedText != null)
             {
@@ -220,7 +220,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning("GameManager: speedText is not assigned.");
+                GameLogger.Warning("GameManager", "speedText is not assigned.");
             }
         }
     }

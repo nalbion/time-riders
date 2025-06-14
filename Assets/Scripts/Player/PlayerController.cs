@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
         UpdateWheelMeshes();
         CheckGrounded();
         currentSpeed = rb.linearVelocity.magnitude * 3.6f; // Convert to km/h
-        Debug.Log($"[PlayerController] Speed: {currentSpeed:F2} km/h, MotorInput: {motorInput:F2}");
+        GameLogger.Info("PlayerController", $"Speed: {currentSpeed:F2} km/h, MotorInput: {motorInput:F2}");
 
         ApplyBankingAndStability();
     }

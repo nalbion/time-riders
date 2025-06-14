@@ -27,10 +27,10 @@ public class QuickPlayerSetup : MonoBehaviour
         if (Terrain.activeTerrain != null) {
             Bounds bounds = Terrain.activeTerrain.terrainData.bounds;
             Vector3 tpos = Terrain.activeTerrain.GetPosition();
-            Debug.Log($"Terrain origin: {tpos}, bounds size: {bounds.size}, world max: {tpos + bounds.size}");
+            GameLogger.Info("QuickPlayerSetup", $"Terrain origin: {tpos}, bounds size: {bounds.size}, world max: {tpos + bounds.size}");
         }
         if (player != null) {
-            Debug.Log($"Initial player position: {player.transform.position}");
+            GameLogger.Info("QuickPlayerSetup", $"Initial player position: {player.transform.position}");
         }
         if (player != null && Terrain.activeTerrain != null) {
             Vector3 tOrigin = Terrain.activeTerrain.GetPosition();
@@ -39,7 +39,7 @@ public class QuickPlayerSetup : MonoBehaviour
             float z = tOrigin.z + tSize.z / 2f;
             float y = Terrain.activeTerrain.SampleHeight(new Vector3(x, 0, z)) + 2f;
             player.transform.position = new Vector3(x, y, z);
-            Debug.Log($"[Coroutine] Player repositioned to terrain center: ({x}, {y}, {z})");
+            GameLogger.Info("QuickPlayerSetup", $"[Coroutine] Player repositioned to terrain center: ({x}, {y}, {z})");
         }
     }
     
@@ -57,7 +57,7 @@ public class QuickPlayerSetup : MonoBehaviour
             x = tOrigin.x + tSize.x / 2f;
             z = tOrigin.z + tSize.z / 2f;
             y = Terrain.activeTerrain.SampleHeight(new Vector3(x, 0, z)) + 2f;
-            Debug.Log($"Spawning player at terrain center: ({x}, {y}, {z})");
+            GameLogger.Info("QuickPlayerSetup", $"Spawning player at terrain center: ({x}, {y}, {z})");
         }
         player.transform.position = new Vector3(x, y, z);
         

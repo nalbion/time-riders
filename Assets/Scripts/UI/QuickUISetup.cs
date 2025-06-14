@@ -87,14 +87,14 @@ public class QuickUISetup : MonoBehaviour {
 
         // Add button functionality
         button.onClick.AddListener(() => {
-            Debug.Log("START RACE button clicked");
+            GameLogger.Info("QuickUISetup", "START RACE button clicked");
             buttonObj.SetActive(false); // Hide immediately on click
             var gameManager = FindFirstObjectByType<GameManager>();
             if (gameManager) {
-                Debug.Log("GameManager found, calling BeginRace()");
+                GameLogger.Info("QuickUISetup", "GameManager found, calling BeginRace()");
                 gameManager.BeginRace();
             } else {
-                Debug.LogWarning("GameManager not found when clicking START RACE");
+                GameLogger.Warning("QuickUISetup", "GameManager not found when clicking START RACE");
             }
         });
 
