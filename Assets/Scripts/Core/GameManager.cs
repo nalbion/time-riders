@@ -83,7 +83,7 @@ public class GameManager : MonoBehaviour
     
     private TextMeshProUGUI FindTextByName(string name)
     {
-        var texts = GameObject.FindObjectsOfType<TMPro.TextMeshProUGUI>();
+        var texts = GameObject.FindObjectsByType<TMPro.TextMeshProUGUI>(FindObjectsSortMode.None);
         foreach (var t in texts)
         {
             if (t.gameObject.name == name)

@@ -8,6 +8,7 @@ on:
       - main
 jobs:
   build:
+    name: Build Unity Project 🏗️
     uses: ./.github/workflows/unity-common.yml
     with:
       targetPlatform: WebGL
