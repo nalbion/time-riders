@@ -1,3 +1,8 @@
+---
+description:
+globs:
+alwaysApply: true
+---
 # GitHub Copilot Instructions
 
 This guide is for all developers and AI tools (including Copilot, Cursor, Cascade) working on Time Riders. For ongoing improvements, see `refactor_tasks.md` and the style guides. for Time Riders
@@ -88,3 +93,4 @@ When providing suggestions, prioritize code that is:
 2. Well-structured following SOLID principles
 3. Performant in Unity's context
 4. Well-documented with appropriate comments
+
