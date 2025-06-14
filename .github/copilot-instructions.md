@@ -1,0 +1,88 @@
+# GitHub Copilot Instructions for Time Riders
+
+## Project Overview
+Time Riders is a Unity-based bike racing game focused on physics-based gameplay and terrain interaction. The player controls a bike that must navigate various terrain types with different physics properties.
+
+### Single Responsibility Principle
+- Each class should have only one reason to change
+- Split large classes into smaller, focused ones
+- Example: Separate `BikePhysics` from `BikeInput`
+
+### Open/Closed Principle
+- Classes should be open for extension but closed for modification
+- Use inheritance and interfaces to allow behavior extension - but only when needed. YAGNI - If it's likely that only a single implementation will ever exist unnecessary interfaces just create extra maintenance and cognitive work.
+
+### Liskov Substitution Principle
+- Derived classes must be substitutable for their base classes
+- Ensure override methods maintain the base class's behavior contract
+
+### Interface Segregation Principle
+- Keep interfaces focused and minimal
+- Only create interfaces when you expect multiple implementations (YAGNI principle)
+- Avoid unnecessary interfaces that add maintenance burden
+- Clients should not depend on methods they do not use
+
+### Dependency Inversion Principle
+- Depend on abstractions, not concrete implementations
+- Use dependency injection for better testability
+
+### Braces and Formatting
+- Place opening braces on the same line as the function signature, if/for/while statements, etc. (e.g., `if (x) { ... }`)
+
+
+## Code Organization Guidelines
+- Public methods at the top of files, private helpers at the bottom
+- Use dependency injection for easier testing
+- Use clear naming conventions with self-explanatory code
+- Implement logging with appropriate levels/groups for different audiences
+- Create cohesive modules with low coupling
+- Organize files by feature rather than by type
+
+## Preferred Patterns
+- Composition over inheritance
+- Observer pattern for events
+- Strategy pattern for swappable behaviors
+- State pattern for complex state management
+- Command pattern for input handling
+
+## Testing Approach
+When suggesting code, consider testability:
+- Mock dependencies through interfaces
+- Avoid static methods for core game logic
+- Break complex logic into testable units
+- Add validation and error handling
+
+## Documentation Standards
+- XML documentation for all public methods and classes
+- READMEs for major components
+- Clear comments explaining "why" rather than "what"
+- Keep comments synchronized with code changes
+
+## Common Challenges
+These are areas where assistance is particularly valuable:
+- Physics-based bike controls (acceleration, stability, terrain adaptation)
+- Optimizing performance for smooth gameplay
+- Implementing AI agents for opponents
+- Creating dynamic terrain interactions
+- Balancing difficulty and progression
+
+## Style Preferences
+- Braces on their own lines
+- `camelCase` for private fields, `_camelCase` for parameters
+- `PascalCase` for public properties, methods, classes
+- Explicit access modifiers always included
+- Organize using statements alphabetically
+- Use LINQ for collection operations where appropriate
+
+## Project-Specific Knowledge
+- `PlayerController`: Handles bike physics and user input
+- `GameManager`: Singleton that manages game state
+- `TerrainType`: Enum for different terrain surfaces
+- `WheelCollider`: Unity component used for bike wheels
+- `QuickPlayerSetup`: Helper for initial bike configuration
+
+When providing suggestions, prioritize code that is:
+1. Easy to understand for beginners
+2. Well-structured following SOLID principles
+3. Performant in Unity's context
+4. Well-documented with appropriate comments
