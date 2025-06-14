@@ -127,6 +127,18 @@ public class SceneSetup : MonoBehaviour {
         Terrain terrain = terrainObj.GetComponent<Terrain>();
         terrainObj.AddComponent<TerrainChecker>().terrainType = TerrainType.Bitumen;
 
+        // --- Ensure TerrainCollider is present and assigned ---
+        TerrainCollider collider = terrainObj.GetComponent<TerrainCollider>();
+        if (!collider) collider = terrainObj.AddComponent<TerrainCollider>();
+        collider.terrainData = terrainData;
+
+        // --- Assign a WebGL-compatible material (Nature/Terrain/Standard) ---
+        // Ensure you have a Resources/StandardTerrainMaterial.mat using Nature/Terrain/Standard shader
+        Material terrainMat = Resources.Load<Material>("StandardTerrainMaterial");
+        if (terrainMat != null) {
+            terrain.materialTemplate = terrainMat;
+        }
+
         // --- Setup Terrain Layers (track and grass) ---
         TerrainLayer trackLayer = new TerrainLayer();
         TerrainLayer grassLayer = new TerrainLayer();
