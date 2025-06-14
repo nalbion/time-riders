@@ -136,26 +136,26 @@ public class SceneSetup : MonoBehaviour {
         // Ensure you have a Resources/StandardTerrainMaterial.mat using Nature/Terrain/Standard shader
         Material terrainMat = Resources.Load<Material>("StandardTerrainMaterial");
         if (terrainMat != null) {
-            terrain.materialTemplate = terrainMat;
+            // terrain.materialTemplate = terrainMat;
         }
+        Debug.Log(terrainMat == null ? "Terrain material missing!" : "Terrain material loaded.");
 
         // --- Setup Terrain Layers (track and grass) ---
-        TerrainLayer trackLayer = new TerrainLayer();
-        TerrainLayer grassLayer = new TerrainLayer();
-        trackLayer.diffuseTexture = Texture2D.grayTexture;
-        trackLayer.tileSize = new Vector2(10, 10);
-        grassLayer.diffuseTexture = CreateSolidColorTexture(Color.green);
-        grassLayer.tileSize = new Vector2(20, 20);
-        terrainData.terrainLayers = new TerrainLayer[] { grassLayer, trackLayer };
+        // Load textures from Resources folder (Assets/Resources/dirt.png, grass.png)
+        Texture2D trackTexture = Resources.Load<Texture2D>("dirt");
+        Texture2D grassTexture = Resources.Load<Texture2D>("grass");
 
-        // Helper to create a solid color texture
-        Texture2D CreateSolidColorTexture(Color color) {
-            Texture2D tex = new Texture2D(2, 2);
-            Color[] pixels = new Color[4] { color, color, color, color };
-            tex.SetPixels(pixels);
-            tex.Apply();
-            return tex;
-        }
+        TerrainLayer grassLayer = new TerrainLayer();
+        grassLayer.diffuseTexture = grassTexture;
+        grassLayer.tileSize = new Vector2(10, 10); // Adjust tiling as needed
+        grassLayer.name = "Grass";
+
+        TerrainLayer trackLayer = new TerrainLayer();
+        trackLayer.diffuseTexture = trackTexture;
+        trackLayer.tileSize = new Vector2(10, 10);
+        trackLayer.name = "Track";
+
+        terrainData.terrainLayers = new TerrainLayer[] { grassLayer, trackLayer };
 
         // --- Paint track texture ---
         int alphaRes = 512;

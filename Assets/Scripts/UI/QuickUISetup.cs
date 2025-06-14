@@ -123,13 +123,13 @@ public class QuickUISetup : MonoBehaviour {
         hudObj.SetActive(false); // Hidden initially
         
         // Timer
-        var timer = CreateHUDElement(hudObj.transform, "Timer", "05:00", new Vector2(-300, 250));
-        // Speed
-        var speed = CreateHUDElement(hudObj.transform, "Speed", "0 km/h", new Vector2(300, 250));
-        // Health bar would go here
+        // var timer = CreateHUDElement(hudObj.transform, "Timer", "05:00", new Vector2(-300, 250));
+        // // Speed
+        // var speed = CreateHUDElement(hudObj.transform, "Speed", "0 km/h", new Vector2(300, 250));
+        // // Health bar would go here
 
-        // Wire up to GameManager, retry if not found
-        StartCoroutine(AssignHUDToGameManagerWhenReady(hudObj, timer, speed));
+        // // Wire up to GameManager, retry if not found
+        // StartCoroutine(AssignHUDToGameManagerWhenReady(hudObj, timer, speed));
     }
 
     /// <summary>
