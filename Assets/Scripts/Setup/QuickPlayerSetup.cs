@@ -46,7 +46,7 @@ public class QuickPlayerSetup : MonoBehaviour
     /// <summary>
     /// Creates a basic player motorbike with wheels, physics, and controller.
     /// </summary>
-    void CreateBasicPlayer() {
+    public void CreateBasicPlayer() {
         // Create basic motorbike (using capsule for now)
         GameObject player = new GameObject("Player1");
         // Spawn at terrain center (on the road)
@@ -101,7 +101,7 @@ public class QuickPlayerSetup : MonoBehaviour
         wheel.transform.localScale = Vector3.one * 0.6f;
         
         // Remove collider from visual wheel
-        Destroy(wheel.GetComponent<Collider>());
+        DestroyImmediate(wheel.GetComponent<Collider>());
     }
     
     /// <summary>

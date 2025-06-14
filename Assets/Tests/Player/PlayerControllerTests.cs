@@ -8,12 +8,11 @@ using System.Collections;
 /// </summary>
 public class PlayerControllerTests
 {
-    [UnityTest]
-    public IEnumerator PlayerController_InitializesWithDefaultValues()
+    [Test]
+    public void PlayerController_InitializesWithDefaultValues()
     {
         var go = new GameObject("Player");
         var pc = go.AddComponent<PlayerController>();
-        yield return null; // Wait one frame for initialization
         Assert.IsNotNull(pc);
         Assert.GreaterOrEqual(pc.MaxSpeed, 0f, "MaxSpeed should be non-negative");
         Assert.GreaterOrEqual(pc.Acceleration, 0f, "Acceleration should be non-negative");

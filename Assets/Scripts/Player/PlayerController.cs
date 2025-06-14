@@ -13,6 +13,12 @@ public class PlayerController : MonoBehaviour
     public float maxSpeed = 500f; // Much more powerful for racing bike
     public float acceleration = 50f; // Controls how quickly throttle ramps up
 
+    /// <summary>
+    /// Public property for test compatibility
+    /// </summary>
+    public float MaxSpeed => maxSpeed;
+    public float Acceleration => acceleration;
+
     [Header("Bike Stability")]
     public float selfRightingStrength = 4f;
     public float bankingStrength = 8f;

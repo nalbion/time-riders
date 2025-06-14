@@ -9,13 +9,12 @@ using System.Collections;
 /// </summary>
 public class QuickUISetupTests
 {
-    [UnityTest]
-    public IEnumerator QuickUISetup_CreatesStartButton()
+    [Test]
+    public void QuickUISetup_CreatesStartButton()
     {
         var go = new GameObject("QuickUISetup");
         var quickUI = go.AddComponent<QuickUISetup>();
         quickUI.CreateStartButton(go.transform);
-        yield return null;
         var button = GameObject.Find("StartButton");
         Assert.IsNotNull(button, "StartButton should be created");
         Assert.IsNotNull(button.GetComponent<Button>(), "StartButton should have a Button component");

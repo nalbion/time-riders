@@ -24,13 +24,13 @@ public static class GameLogger
         {
             case LogLevel.Debug:
             case LogLevel.Info:
-                Debug.Log(prefix + message);
+                UnityEngine.Debug.Log(prefix + message);
                 break;
             case LogLevel.Warning:
-                Debug.LogWarning(prefix + message);
+                UnityEngine.Debug.LogWarning(prefix + message);
                 break;
             case LogLevel.Error:
-                Debug.LogError(prefix + message);
+                UnityEngine.Debug.LogError(prefix + message);
                 break;
         }
     }

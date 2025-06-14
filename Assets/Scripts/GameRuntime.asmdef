@@ -1,0 +1,7 @@
+{
+    "name": "GameRuntime",
+    "references": [
+        "Unity.TextMeshPro",
+        "Unity.InputSystem"
+    ]
+}

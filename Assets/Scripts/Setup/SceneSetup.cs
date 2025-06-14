@@ -42,7 +42,7 @@ public class SceneSetup : MonoBehaviour {
     /// <summary>
     /// Creates a procedural terrain with a central road and grass.
     /// </summary>
-    void CreateBasicTerrain() {
+    public void CreateBasicTerrain() {
         // Create TerrainData
         int size = 256;
         int height = 40;

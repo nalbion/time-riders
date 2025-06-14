@@ -8,12 +8,11 @@ using System.Collections;
 /// </summary>
 public class DebugHelperTests
 {
-    [UnityTest]
-    public IEnumerator DebugHelper_CanBeCreatedAndLogsState()
+    [Test]
+    public void DebugHelper_CanBeCreated()
     {
         var go = new GameObject("DebugHelper");
         var dh = go.AddComponent<DebugHelper>();
-        yield return null;
         Assert.IsNotNull(dh);
         // Optionally, check log output or GameObject state if needed
     }

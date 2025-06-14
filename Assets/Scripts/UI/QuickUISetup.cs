@@ -7,6 +7,93 @@ using TMPro;
 /// </summary>
 public class QuickUISetup : MonoBehaviour {
     /// <summary>
+    /// Creates a Start button and instructions label under the given parent transform.
+    /// </summary>
+    /// <param name="parent">Parent transform (usually the Canvas)</param>
+    public void CreateStartButton(Transform parent) {
+        GameManager gm = FindFirstObjectByType<GameManager>();
+        // Prevent duplicate button if already exists
+        if (gm && gm.mainMenuUI != null)
+            return;
+
+        GameObject buttonObj = CreateButtonObject(parent);
+        TextMeshProUGUI text = AddButtonLabel(buttonObj, "START RACE");
+        Button button = buttonObj.GetComponent<Button>();
+        WireButtonEvents(button, buttonObj);
+
+        // Assign to GameManager.mainMenuUI for state management
+        if (gm) {
+            gm.mainMenuUI = buttonObj;
+        }
+
+        AddInstructionsLabel(parent);
+    }
+
+    private GameObject CreateButtonObject(Transform parent) {
+        GameObject buttonObj = new GameObject("StartButton");
+        buttonObj.transform.SetParent(parent);
+        
+        RectTransform rect = buttonObj.AddComponent<RectTransform>();
+        rect.anchoredPosition = Vector2.zero;
+        rect.sizeDelta = new Vector2(200, 50);
+        
+        Button button = buttonObj.AddComponent<Button>();
+        Image buttonImage = buttonObj.AddComponent<Image>();
+        buttonImage.color = Color.green;
+        buttonObj.AddComponent<CanvasRenderer>();
+        return buttonObj;
+    }
+
+    private TextMeshProUGUI AddButtonLabel(GameObject buttonObj, string labelText) {
+        GameObject textObj = new GameObject("Text");
+        textObj.transform.SetParent(buttonObj.transform);
+        
+        RectTransform textRect = textObj.AddComponent<RectTransform>();
+        textRect.anchoredPosition = Vector2.zero;
+        textRect.sizeDelta = buttonObj.GetComponent<RectTransform>().sizeDelta;
+        
+        TextMeshProUGUI text = textObj.AddComponent<TextMeshProUGUI>();
+        text.text = labelText;
+        text.fontSize = 18;
+        text.color = Color.white;
+        text.alignment = TextAlignmentOptions.Center;
+        return text;
+    }
+
+    private void AddInstructionsLabel(Transform parent) {
+        GameObject instructionsObj = new GameObject("Instructions");
+        instructionsObj.transform.SetParent(parent);
+        RectTransform instructionsRect = instructionsObj.AddComponent<RectTransform>();
+        instructionsRect.anchorMin = new Vector2(0.5f, 0.5f);
+        instructionsRect.anchorMax = new Vector2(0.5f, 0.5f);
+        instructionsRect.pivot = new Vector2(0.5f, 1f);
+        instructionsRect.anchoredPosition = new Vector2(0, -60); // 60 pixels below button
+        instructionsRect.sizeDelta = new Vector2(500, 80);
+
+        TextMeshProUGUI instructionsText = instructionsObj.AddComponent<TextMeshProUGUI>();
+        instructionsText.text = "<b>Controls:</b>\nWASD / Arrow keys = Move\nSpace = Jump\nR = Reset Position\nEsc = Menu";
+        instructionsText.fontSize = 18;
+        instructionsText.color = Color.white;
+        instructionsText.alignment = TextAlignmentOptions.Top | TextAlignmentOptions.Center;
+        instructionsText.enableWordWrapping = true;
+    }
+
+    private void WireButtonEvents(Button button, GameObject buttonObj) {
+        button.onClick.RemoveAllListeners();
+        button.onClick.AddListener(() => {
+            GameLogger.Info("QuickUISetup", "START RACE button clicked");
+            buttonObj.SetActive(false); // Hide immediately on click
+            var gameManager = FindFirstObjectByType<GameManager>();
+            if (gameManager) {
+                GameLogger.Info("QuickUISetup", "GameManager found, calling BeginRace()");
+                gameManager.BeginRace();
+            } else {
+                GameLogger.Warning("QuickUISetup", "GameManager not found when clicking START RACE");
+            }
+        });
+    }
+
+    /// <summary>
     /// Unity Start method. Sets up basic UI on scene start.
     /// </summary>
     void Start() {
@@ -45,76 +132,6 @@ public class QuickUISetup : MonoBehaviour {
         CreateHUD(canvas.transform);
     }
     
-    /// <summary>
-    /// Creates a Start button and instructions label under the given parent transform.
-    /// </summary>
-    /// <param name="parent">Parent transform (usually the Canvas)</param>
-    void CreateStartButton(Transform parent) {
-        GameManager gm = FindFirstObjectByType<GameManager>();
-        // Prevent duplicate button if already exists
-        if (gm && gm.mainMenuUI != null)
-            return;
-
-        GameObject buttonObj = new GameObject("StartButton");
-        buttonObj.transform.SetParent(parent);
-        
-        RectTransform rect = buttonObj.AddComponent<RectTransform>();
-        rect.anchoredPosition = Vector2.zero;
-        rect.sizeDelta = new Vector2(200, 50);
-        
-        Button button = buttonObj.AddComponent<Button>();
-        Image buttonImage = buttonObj.AddComponent<Image>();
-        buttonImage.color = Color.green;
-        
-        // Add text
-        GameObject textObj = new GameObject("Text");
-        textObj.transform.SetParent(buttonObj.transform);
-        
-        RectTransform textRect = textObj.AddComponent<RectTransform>();
-        textRect.anchoredPosition = Vector2.zero;
-        textRect.sizeDelta = rect.sizeDelta;
-        
-        TextMeshProUGUI text = textObj.AddComponent<TextMeshProUGUI>();
-        text.text = "START RACE";
-        text.fontSize = 18;
-        text.color = Color.white;
-        text.alignment = TextAlignmentOptions.Center;
-        
-        // Assign to GameManager.mainMenuUI for state management
-        if (gm) {
-            gm.mainMenuUI = buttonObj;
-        }
-
-        // Add button functionality
-        button.onClick.AddListener(() => {
-            GameLogger.Info("QuickUISetup", "START RACE button clicked");
-            buttonObj.SetActive(false); // Hide immediately on click
-            var gameManager = FindFirstObjectByType<GameManager>();
-            if (gameManager) {
-                GameLogger.Info("QuickUISetup", "GameManager found, calling BeginRace()");
-                gameManager.BeginRace();
-            } else {
-                GameLogger.Warning("QuickUISetup", "GameManager not found when clicking START RACE");
-            }
-        });
-
-        // Add instructions label below the button
-        GameObject instructionsObj = new GameObject("Instructions");
-        instructionsObj.transform.SetParent(parent);
-        RectTransform instructionsRect = instructionsObj.AddComponent<RectTransform>();
-        instructionsRect.anchorMin = new Vector2(0.5f, 0.5f);
-        instructionsRect.anchorMax = new Vector2(0.5f, 0.5f);
-        instructionsRect.pivot = new Vector2(0.5f, 1f);
-        instructionsRect.anchoredPosition = new Vector2(0, -60); // 60 pixels below button
-        instructionsRect.sizeDelta = new Vector2(500, 80);
-
-        TextMeshProUGUI instructionsText = instructionsObj.AddComponent<TextMeshProUGUI>();
-        instructionsText.text = "<b>Controls:</b>\nWASD / Arrow keys = Move\nSpace = Jump\nR = Reset Position\nEsc = Menu";
-        instructionsText.fontSize = 18;
-        instructionsText.color = Color.white;
-        instructionsText.alignment = TextAlignmentOptions.Top | TextAlignmentOptions.Center;
-        instructionsText.enableWordWrapping = true;
-    }
     
     /// <summary>
     /// Creates a basic HUD (timer, speed) and wires it to the GameManager.

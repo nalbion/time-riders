@@ -41,6 +41,11 @@ public class GameManager : MonoBehaviour
     public AudioClip crashSound;
     
     private GameState currentState = GameState.MainMenu;
+
+    /// <summary>
+    /// Public property to expose current game state for tests
+    /// </summary>
+    public GameState CurrentState => currentState;
     private float currentRaceTime;
     private bool isRaceActive;
     private List<PlayerController> players = new List<PlayerController>();

@@ -1,0 +1,12 @@
+{
+    "name": "Tests",
+    "references": [
+        "GameRuntime"
+    ],
+    "optionalUnityReferences": [
+        "TestAssemblies"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ]
+}

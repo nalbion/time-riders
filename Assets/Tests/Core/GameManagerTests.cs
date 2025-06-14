@@ -8,14 +8,13 @@ using System.Collections;
 /// </summary>
 public class GameManagerTests
 {
-    [UnityTest]
-    public IEnumerator GameManager_InitializesCorrectly()
+    [Test]
+    public void GameManager_InitializesCorrectly()
     {
         var go = new GameObject("GameManager");
         var gm = go.AddComponent<GameManager>();
-        yield return null; // Wait one frame for initialization
         Assert.IsNotNull(gm);
-        Assert.AreEqual(GameState.MainMenu, gm.CurrentState);
+        Assert.AreEqual(GameManager.GameState.MainMenu, gm.CurrentState);
     }
 
     // Add more tests for race start, finish, and reset as needed
