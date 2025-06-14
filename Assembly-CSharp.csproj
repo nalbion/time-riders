@@ -61,22 +61,31 @@
     <Analyzer Include="C:\Program Files\Unity\Hub\Editor\6000.1.7f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Obstacle.cs" />
-    <Compile Include="Assets\Scripts\LeaderboardManager.cs" />
-    <Compile Include="Assets\Scripts\SceneSetup.cs" />
-    <Compile Include="Assets\Scripts\QuickPlayerSetup.cs" />
-    <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\NPCAnimal.cs" />
-    <Compile Include="Assets\Scripts\CharacterButton.cs" />
-    <Compile Include="Assets\Scripts\CharacterData.cs" />
-    <Compile Include="Assets\Scripts\TerrainChecker.cs" />
-    <Compile Include="Assets\Scripts\CharacterSelector.cs" />
-    <Compile Include="Assets\Scripts\QuickUISetup.cs" />
-    <Compile Include="Assets\Scripts\DebugHelper.cs" />
-    <Compile Include="Assets\Scripts\ConfettiEffect.cs" />
-    <Compile Include="Assets\Scripts\GameManager.cs" />
-    <Compile Include="Assets\Scripts\FinishLine.cs" />
-    <Compile Include="Assets\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Core\LeaderboardManager.cs" />
+    <Compile Include="Assets\Scripts\Player\CameraController.cs" />
+    <Compile Include="Assets\Config\BikeConfig.cs" />
+    <Compile Include="Assets\Tests\Setup\QuickPlayerSetupTests.cs" />
+    <Compile Include="Assets\Scripts\Environment\Obstacle.cs" />
+    <Compile Include="Assets\Scripts\Setup\SceneSetup.cs" />
+    <Compile Include="Assets\Scripts\UI\Character\CharacterButton.cs" />
+    <Compile Include="Assets\Tests\Core\DebugHelperTests.cs" />
+    <Compile Include="Assets\Scripts\UI\Character\CharacterData.cs" />
+    <Compile Include="Assets\Tests\UI\QuickUISetupTests.cs" />
+    <Compile Include="Assets\Scripts\UI\QuickUISetup.cs" />
+    <Compile Include="Assets\Scripts\Core\GameLogger.cs" />
+    <Compile Include="Assets\Scripts\Environment\FinishLine.cs" />
+    <Compile Include="Assets\Tests\Core\GameManagerTests.cs" />
+    <Compile Include="Assets\Scripts\Player\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\Setup\QuickPlayerSetup.cs" />
+    <Compile Include="Assets\Scripts\Core\DebugHelper.cs" />
+    <Compile Include="Assets\Tests\Player\PlayerControllerTests.cs" />
+    <Compile Include="Assets\Scripts\Environment\NPCAnimal.cs" />
+    <Compile Include="Assets\Tests\MinimalTest.cs" />
+    <Compile Include="Assets\Scripts\UI\Character\CharacterSelector.cs" />
+    <Compile Include="Assets\Scripts\UI\ConfettiEffect.cs" />
+    <Compile Include="Assets\Scripts\Environment\TerrainChecker.cs" />
+    <Compile Include="Assets\Scripts\Core\GameManager.cs" />
+    <Compile Include="Assets\Tests\Setup\SceneSetupTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -577,7 +586,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
-      <HintPath>Library\PackageCache\com.unity.visualscripting@6279e2b7c485\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
+      <HintPath>Library\PackageCache\com.unity.visualscripting@b4d700247d4b\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json">
