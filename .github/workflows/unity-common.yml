@@ -113,6 +113,12 @@ jobs:
         with:
           targetPlatform: ${{ inputs.targetPlatform }}
 
+      - name: Copy static public assets (e.g., favicon)
+        run: |
+          if [ -d public ]; then
+            cp -r public/* build/${{ inputs.targetPlatform }}/
+          fi
+
       - name: Set build output path
         id: set-build-path
         run: echo "build-path=build/${{ inputs.targetPlatform }}" >> $GITHUB_OUTPUT

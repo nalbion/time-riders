@@ -6,6 +6,44 @@
       "**/.*",
       "**/node_modules/**"
     ],
+    "headers": [
+      {
+        "source": "**/*.br",
+        "headers": [
+          { "key": "Content-Encoding", "value": "br" }
+        ]
+      },
+      {
+        "source": "**/*.gz",
+        "headers": [
+          { "key": "Content-Encoding", "value": "gzip" }
+        ]
+      },
+      {
+        "source": "**/*.wasm",
+        "headers": [
+          { "key": "Content-Type", "value": "application/wasm" }
+        ]
+      },
+      {
+        "source": "**/*.js",
+        "headers": [
+          { "key": "Content-Type", "value": "application/javascript; charset=UTF-8" }
+        ]
+      },
+      {
+        "source": "**/*.data",
+        "headers": [
+          { "key": "Content-Type", "value": "application/octet-stream" }
+        ]
+      },
+      {
+        "source": "**/*.mem",
+        "headers": [
+          { "key": "Content-Type", "value": "application/octet-stream" }
+        ]
+      }
+    ],
     "rewrites": [
       {
         "source": "**",
