@@ -86,6 +86,7 @@ crashlytics-build.properties
 *.mdb
 *.opendb
 *.VC.db
+*.db
 
 # Logs
 *.log

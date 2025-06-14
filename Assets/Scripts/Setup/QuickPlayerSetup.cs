@@ -1,35 +1,38 @@
 using UnityEngine;
 
+/// <summary>
+/// Quickly sets up a basic player motorbike with wheels, physics, and camera for testing.
+/// </summary>
 public class QuickPlayerSetup : MonoBehaviour
 {
     [Header("Quick Setup")]
     public bool createPlayerOnStart = true;
     
-    void Start()
-    {
-        if (createPlayerOnStart)
-        {
+    /// <summary>
+    /// Unity Start method. Creates the player on start if enabled.
+    /// </summary>
+    void Start() {
+        if (createPlayerOnStart) {
             CreateBasicPlayer();
             StartCoroutine(AlignPlayerToTerrainNextFrame());
         }
     }
 
-    System.Collections.IEnumerator AlignPlayerToTerrainNextFrame()
-    {
+    /// <summary>
+    /// Coroutine to align the player to the center of the terrain after it is created.
+    /// </summary>
+    System.Collections.IEnumerator AlignPlayerToTerrainNextFrame() {
         yield return null; // Wait for one frame so terrain is created
         GameObject player = GameObject.Find("Player1");
-        if (Terrain.activeTerrain != null)
-        {
+        if (Terrain.activeTerrain != null) {
             Bounds bounds = Terrain.activeTerrain.terrainData.bounds;
             Vector3 tpos = Terrain.activeTerrain.GetPosition();
             Debug.Log($"Terrain origin: {tpos}, bounds size: {bounds.size}, world max: {tpos + bounds.size}");
         }
-        if (player != null)
-        {
+        if (player != null) {
             Debug.Log($"Initial player position: {player.transform.position}");
         }
-        if (player != null && Terrain.activeTerrain != null)
-        {
+        if (player != null && Terrain.activeTerrain != null) {
             Vector3 tOrigin = Terrain.activeTerrain.GetPosition();
             Vector3 tSize = Terrain.activeTerrain.terrainData.size;
             float x = tOrigin.x + tSize.x / 2f;
@@ -40,14 +43,15 @@ public class QuickPlayerSetup : MonoBehaviour
         }
     }
     
-    void CreateBasicPlayer()
-    {
+    /// <summary>
+    /// Creates a basic player motorbike with wheels, physics, and controller.
+    /// </summary>
+    void CreateBasicPlayer() {
         // Create basic motorbike (using capsule for now)
         GameObject player = new GameObject("Player1");
         // Spawn at terrain center (on the road)
         float x = 0f, z = 0f, y = 2f;
-        if (Terrain.activeTerrain != null)
-        {
+        if (Terrain.activeTerrain != null) {
             Vector3 tOrigin = Terrain.activeTerrain.GetPosition();
             Vector3 tSize = Terrain.activeTerrain.terrainData.size;
             x = tOrigin.x + tSize.x / 2f;
@@ -83,8 +87,13 @@ public class QuickPlayerSetup : MonoBehaviour
         SetupCamera(player.transform);
     }
     
-    void CreateWheel(Transform parent, string name, Vector3 position)
-    {
+    /// <summary>
+    /// Creates a visual wheel as a child of the player.
+    /// </summary>
+    /// <param name="parent">The parent transform (player)</param>
+    /// <param name="name">Wheel name</param>
+    /// <param name="position">Wheel local position</param>
+    void CreateWheel(Transform parent, string name, Vector3 position) {
         GameObject wheel = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         wheel.name = name;
         wheel.transform.SetParent(parent);
@@ -95,8 +104,12 @@ public class QuickPlayerSetup : MonoBehaviour
         Destroy(wheel.GetComponent<Collider>());
     }
     
-    void AddWheelColliders(PlayerController controller, GameObject player)
-    {
+    /// <summary>
+    /// Adds and configures wheel colliders for the player and assigns them to the controller.
+    /// </summary>
+    /// <param name="controller">The PlayerController instance</param>
+    /// <param name="player">The player GameObject</param>
+    void AddWheelColliders(PlayerController controller, GameObject player) {
         // Create wheel colliders
         GameObject frontWheelCollider = new GameObject("FrontWheelCollider");
         frontWheelCollider.transform.SetParent(player.transform);
@@ -120,11 +133,14 @@ public class QuickPlayerSetup : MonoBehaviour
         };
     }
     
-    void ConfigureWheelCollider(WheelCollider wheel)
-    {
+    /// <summary>
+    /// Configures the physics properties of a WheelCollider.
+    /// </summary>
+    /// <param name="wheel">The WheelCollider to configure</param>
+    void ConfigureWheelCollider(WheelCollider wheel) {
         JointSpring spring = wheel.suspensionSpring;
-        spring.spring = 18000f; // was 35000f
-        spring.damper = 7000f; // was 4500f
+        spring.spring = 18000f;
+        spring.damper = 7000f;
         wheel.suspensionSpring = spring;
         
         wheel.suspensionDistance = 0.3f;
@@ -148,19 +164,20 @@ public class QuickPlayerSetup : MonoBehaviour
         wheel.forwardFriction = forward;
     }
     
-    void SetupCamera(Transform target)
-    {
+    /// <summary>
+    /// Sets up the main camera to follow the player.
+    /// </summary>
+    /// <param name="target">The player transform to follow</param>
+    void SetupCamera(Transform target) {
         Camera mainCamera = Camera.main;
-        if (mainCamera == null)
-        {
+        if (mainCamera == null) {
             GameObject cameraObj = new GameObject("Main Camera");
             mainCamera = cameraObj.AddComponent<Camera>();
             cameraObj.tag = "MainCamera";
         }
         
         CameraController camController = mainCamera.GetComponent<CameraController>();
-        if (camController == null)
-        {
+        if (camController == null) {
             camController = mainCamera.gameObject.AddComponent<CameraController>();
         }
         

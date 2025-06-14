@@ -2,22 +2,26 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class QuickUISetup : MonoBehaviour
-{
-    void Start()
-    {
+/// <summary>
+/// Quickly creates and initializes basic UI elements (canvas, start button, HUD) at runtime.
+/// </summary>
+public class QuickUISetup : MonoBehaviour {
+    /// <summary>
+    /// Unity Start method. Sets up basic UI on scene start.
+    /// </summary>
+    void Start() {
         SetupBasicUI();
     }
     
-    void SetupBasicUI()
-    {
+    /// <summary>
+    /// Sets up the EventSystem, Canvas, Start button, and HUD.
+    /// </summary>
+    void SetupBasicUI() {
         // Ensure EventSystem exists for UI interaction
         var eventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>();
-        if (eventSystem == null)
-        {
+        if (eventSystem == null) {
             GameObject esObj = new GameObject("EventSystem");
             var es = esObj.AddComponent<UnityEngine.EventSystems.EventSystem>();
-            // Use InputSystemUIInputModule for the new Input System
 #if ENABLE_INPUT_SYSTEM && !ENABLE_LEGACY_INPUT_MANAGER
             esObj.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
 #else
@@ -26,8 +30,7 @@ public class QuickUISetup : MonoBehaviour
         }
 
         Canvas canvas = FindFirstObjectByType<Canvas>();
-        if (canvas == null)
-        {
+        if (canvas == null) {
             GameObject canvasObj = new GameObject("Canvas");
             canvas = canvasObj.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
@@ -42,8 +45,11 @@ public class QuickUISetup : MonoBehaviour
         CreateHUD(canvas.transform);
     }
     
-    void CreateStartButton(Transform parent)
-    {
+    /// <summary>
+    /// Creates a Start button and instructions label under the given parent transform.
+    /// </summary>
+    /// <param name="parent">Parent transform (usually the Canvas)</param>
+    void CreateStartButton(Transform parent) {
         GameManager gm = FindFirstObjectByType<GameManager>();
         // Prevent duplicate button if already exists
         if (gm && gm.mainMenuUI != null)
@@ -75,8 +81,7 @@ public class QuickUISetup : MonoBehaviour
         text.alignment = TextAlignmentOptions.Center;
         
         // Assign to GameManager.mainMenuUI for state management
-        if (gm)
-        {
+        if (gm) {
             gm.mainMenuUI = buttonObj;
         }
 
@@ -85,13 +90,10 @@ public class QuickUISetup : MonoBehaviour
             Debug.Log("START RACE button clicked");
             buttonObj.SetActive(false); // Hide immediately on click
             var gameManager = FindFirstObjectByType<GameManager>();
-            if (gameManager)
-            {
+            if (gameManager) {
                 Debug.Log("GameManager found, calling BeginRace()");
                 gameManager.BeginRace();
-            }
-            else
-            {
+            } else {
                 Debug.LogWarning("GameManager not found when clicking START RACE");
             }
         });
@@ -114,8 +116,11 @@ public class QuickUISetup : MonoBehaviour
         instructionsText.enableWordWrapping = true;
     }
     
-    void CreateHUD(Transform parent)
-    {
+    /// <summary>
+    /// Creates a basic HUD (timer, speed) and wires it to the GameManager.
+    /// </summary>
+    /// <param name="parent">Parent transform (Canvas)</param>
+    void CreateHUD(Transform parent) {
         GameObject hudObj = new GameObject("HUD");
         hudObj.transform.SetParent(parent);
         hudObj.SetActive(false); // Hidden initially
@@ -130,11 +135,15 @@ public class QuickUISetup : MonoBehaviour
         StartCoroutine(AssignHUDToGameManagerWhenReady(hudObj, timer, speed));
     }
 
-    System.Collections.IEnumerator AssignHUDToGameManagerWhenReady(GameObject hudObj, TMPro.TextMeshProUGUI timer, TMPro.TextMeshProUGUI speed)
-    {
+    /// <summary>
+    /// Coroutine that waits for GameManager and assigns HUD references.
+    /// </summary>
+    /// <param name="hudObj">HUD GameObject</param>
+    /// <param name="timer">Timer TextMeshProUGUI</param>
+    /// <param name="speed">Speed TextMeshProUGUI</param>
+    System.Collections.IEnumerator AssignHUDToGameManagerWhenReady(GameObject hudObj, TMPro.TextMeshProUGUI timer, TMPro.TextMeshProUGUI speed) {
         GameManager gm = null;
-        while ((gm = FindFirstObjectByType<GameManager>()) == null)
-        {
+        while ((gm = FindFirstObjectByType<GameManager>()) == null) {
             yield return null; // Wait a frame
         }
         gm.gameUI = hudObj;
@@ -142,8 +151,15 @@ public class QuickUISetup : MonoBehaviour
         gm.speedText = speed;
     }
     
-    TextMeshProUGUI CreateHUDElement(Transform parent, string name, string text, Vector2 position)
-    {
+    /// <summary>
+    /// Creates a HUD text element (e.g., timer or speed) at the given position.
+    /// </summary>
+    /// <param name="parent">Parent transform (HUD)</param>
+    /// <param name="name">Element name</param>
+    /// <param name="text">Initial text</param>
+    /// <param name="position">Anchored position</param>
+    /// <returns>TextMeshProUGUI component for the element</returns>
+    TextMeshProUGUI CreateHUDElement(Transform parent, string name, string text, Vector2 position) {
         GameObject textObj = new GameObject(name);
         textObj.transform.SetParent(parent);
         

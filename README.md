@@ -122,6 +122,45 @@ Replace placeholder audio files with:
 - **Secondary**: Mobile browsers (responsive UI)
 - **Tested**: Chrome, Firefox, Safari, Edge
 
+## 🏁 Project Story & Philosophy
+
+Time Riders is a Unity-based bike racing game designed as a learning project for pragmatic, beginner-friendly software engineering. The codebase is structured for clarity, maintainability, and AI-assisted workflows, making it ideal for both new developers and collaborative environments (including Copilot, Cursor, and Cascade AI).
+
+### Key Principles
+- **SOLID**: Classes have a single responsibility, open for extension, and easy to test.
+- **YAGNI**: Only use interfaces when multiple implementations are likely.
+- **Brace Style**: Opening braces are always on the same line as method signatures and control statements.
+- **Beginner-Friendly**: Code, comments, and docs are written for clarity and learning.
+- **Storytelling**: Design docs, README, comments, naming, logs, and tests all tell the project's story.
+
+## 🗂️ Folder Structure & Script Organization
+
+```
+Assets/
+├── Scripts/
+│   ├── Core/           # GameManager, Logger, EventSystem, etc.
+│   ├── Player/         # PlayerController, CameraController, Character scripts
+│   ├── UI/             # UI setup, HUD, QuickUISetup
+│   ├── Environment/    # Terrain, obstacles, SceneSetup
+│   ├── Setup/          # SceneSetup, QuickPlayerSetup, initial setup scripts
+├── Config/             # ScriptableObject configs (e.g., BikeConfig)
+└── Tests/              # Unit and integration tests
+```
+
+- See `unity-style-guide.md`, `.instructions.md`, and `refactor_tasks.md` for details on coding standards and ongoing improvements.
+
+## 🤖 AI-Assisted Development
+
+- The project is optimized for use with GitHub Copilot, Cursor, and Cascade AI.
+- Follow the instructions in `.github/copilot-instructions.md` and `cursor-style-guide.md` for best practices.
+- Refactoring tasks and progress are tracked in `refactor_tasks.md`.
+
+## 📝 Logging, Config, and Testing
+
+- Use `GameLogger` (Core/) for categorized, level-based logging.
+- Store configuration data in ScriptableObjects (see `Config/BikeConfig.cs`).
+- Add unit and play mode tests for all core gameplay logic.
+
 ## 🚀 Deployment
 
 The game builds to WebGL for web deployment. Host on any web server that supports:
