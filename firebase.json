@@ -1,11 +1,7 @@
 {
   "hosting": {
     "public": "build/WebGL",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": [],
     "headers": [
       {
         "source": "**/*.br",
