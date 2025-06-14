@@ -146,12 +146,19 @@ public class SceneSetup : MonoBehaviour {
         }
 
         // --- Paint track texture ---
-        float[,,] alphas = new float[size, size, 2];
-        for (int x = 0; x < size; x++) {
-            for (int y = 0; y < size; y++) {
+        int alphaRes = 512;
+        terrainData.alphamapResolution = alphaRes;
+        float[,,] alphas = new float[alphaRes, alphaRes, 2];
+        for (int x = 0; x < alphaRes; x++) {
+            for (int y = 0; y < alphaRes; y++) {
+                // Map alphamap coords to heightmap/track space
+                float normX = (float)x / (alphaRes - 1);
+                float normY = (float)y / (alphaRes - 1);
+                int hmX = Mathf.RoundToInt(normX * (size - 1));
+                int hmY = Mathf.RoundToInt(normY * (size - 1));
                 float minDist = 9999f;
                 for (int i = 0; i < numPoints; i++) {
-                    float d = Vector2.Distance(new Vector2(x, y), trackPoints[i]);
+                    float d = Vector2.Distance(new Vector2(hmX, hmY), trackPoints[i]);
                     if (d < minDist) minDist = d;
                 }
                 float t = Mathf.Clamp01(1f - (minDist / (trackWidth / 1.6f)));
