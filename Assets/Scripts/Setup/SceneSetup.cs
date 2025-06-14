@@ -43,41 +43,98 @@ public class SceneSetup : MonoBehaviour {
     /// Creates a procedural terrain with a central road and grass.
     /// </summary>
     public void CreateBasicTerrain() {
-        // Create TerrainData
-        int size = 256;
-        int height = 40;
+        // --- Motocross Terrain Generation (1 meter per unit) ---
+        int size = 513; // 513x513 heightmap, 1m per sample
+        float terrainWidth = 512f; // meters
+        float terrainLength = 512f; // meters
+        float terrainHeight = 30f; // meters (vertical scale)
         TerrainData terrainData = new TerrainData();
-        terrainData.heightmapResolution = size + 1;
-        terrainData.size = new Vector3(200, height, 200);
+        terrainData.heightmapResolution = size;
+        terrainData.size = new Vector3(terrainWidth, terrainHeight, terrainLength);
 
-        // Generate hills with Perlin noise
+        // Generate smooth base terrain (gentle undulations)
         float[,] heights = new float[size, size];
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
-                float nx = (float)x / size - 0.5f;
-                float ny = (float)y / size - 0.5f;
-                float hill = Mathf.PerlinNoise(x * 0.07f, y * 0.07f) * 0.15f;
-                heights[x, y] = hill;
+                float nx = (float)x / (size - 1);
+                float ny = (float)y / (size - 1);
+                // Low-frequency Perlin for gentle hills
+                float baseHill = Mathf.PerlinNoise(nx * 2f, ny * 2f) * 0.08f;
+                heights[x, y] = 0.15f + baseHill;
+            }
+        }
+
+        // --- Procedural Track Path (simple loop for demo) ---
+        // Parameters for track shape
+        int numPoints = 18;
+        float trackRadius = 170f; // meters (from center)
+        float trackWidth = 12f; // meters
+        float bermRadius = 16f; // meters (for banked turns)
+        float jumpHeight = 0.08f; // normalized height (relative to terrainHeight)
+        float jumpLength = 24f; // meters
+        Vector2 center = new Vector2(size / 2, size / 2);
+        Vector2[] trackPoints = new Vector2[numPoints];
+        float[] trackElev = new float[numPoints];
+        for (int i = 0; i < numPoints; i++) {
+            float angle = (2 * Mathf.PI * i) / numPoints;
+            float straight = (i % 3 == 0) ? 1.2f : 1f;
+            float r = trackRadius * straight;
+            float x = center.x + Mathf.Cos(angle) * r;
+            float y = center.y + Mathf.Sin(angle) * r;
+            trackPoints[i] = new Vector2(x, y);
+            // Add jumps every 4th point
+            trackElev[i] = (i % 4 == 2) ? jumpHeight : 0f;
+        }
+
+        // Paint track onto heightmap
+        for (int i = 0; i < numPoints; i++) {
+            Vector2 p0 = trackPoints[i];
+            Vector2 p1 = trackPoints[(i + 1) % numPoints];
+            float elev0 = trackElev[i];
+            float elev1 = trackElev[(i + 1) % numPoints];
+            int steps = (int)(Vector2.Distance(p0, p1));
+            for (int s = 0; s <= steps; s++) {
+                float t = (float)s / steps;
+                Vector2 pos = Vector2.Lerp(p0, p1, t);
+                float elev = Mathf.Lerp(elev0, elev1, t);
+                // Track centerline
+                int cx = Mathf.RoundToInt(pos.x);
+                int cy = Mathf.RoundToInt(pos.y);
+                for (int dx = -Mathf.CeilToInt(trackWidth / 2); dx <= Mathf.CeilToInt(trackWidth / 2); dx++) {
+                    for (int dy = -Mathf.CeilToInt(trackWidth / 2); dy <= Mathf.CeilToInt(trackWidth / 2); dy++) {
+                        int tx = cx + dx;
+                        int ty = cy + dy;
+                        if (tx < 0 || tx >= size || ty < 0 || ty >= size) continue;
+                        float dist = Mathf.Sqrt(dx * dx + dy * dy);
+                        float norm = Mathf.Clamp01(1f - (dist / (trackWidth / 2f)));
+                        // Carve track into terrain (flatten, add jump if present)
+                        float baseHeight = 0.17f + elev * Mathf.Exp(-Mathf.Pow(dist / (jumpLength / 2f), 2));
+                        heights[tx, ty] = Mathf.Lerp(heights[tx, ty], baseHeight, norm * 0.85f);
+                        // Add berm on sharp bends
+                        if (dist > (trackWidth / 2f) * 0.7f && dist < bermRadius) {
+                            float berm = 0.06f * Mathf.Pow(norm, 1.5f) * Mathf.Abs(Mathf.Sin((angleBetween(trackPoints, i) - Mathf.PI) / 2));
+                            heights[tx, ty] += berm;
+                        }
+                    }
+                }
             }
         }
         terrainData.SetHeights(0, 0, heights);
 
-        // Create the Terrain object
+        // --- Create Terrain Object ---
         GameObject terrainObj = Terrain.CreateTerrainGameObject(terrainData);
-        terrainObj.name = "ProceduralTerrain";
+        terrainObj.name = "MotocrossTerrain";
         Terrain terrain = terrainObj.GetComponent<Terrain>();
         terrainObj.AddComponent<TerrainChecker>().terrainType = TerrainType.Bitumen;
 
-        // Setup Terrain Layers (road and grass)
-        TerrainLayer roadLayer = new TerrainLayer();
+        // --- Setup Terrain Layers (track and grass) ---
+        TerrainLayer trackLayer = new TerrainLayer();
         TerrainLayer grassLayer = new TerrainLayer();
-        // Road: use gray or white
-        roadLayer.diffuseTexture = Texture2D.grayTexture;
-        roadLayer.tileSize = new Vector2(10, 10);
-        // Grass: create a solid green texture
+        trackLayer.diffuseTexture = Texture2D.grayTexture;
+        trackLayer.tileSize = new Vector2(10, 10);
         grassLayer.diffuseTexture = CreateSolidColorTexture(Color.green);
         grassLayer.tileSize = new Vector2(20, 20);
-        terrainData.terrainLayers = new TerrainLayer[] { grassLayer, roadLayer };
+        terrainData.terrainLayers = new TerrainLayer[] { grassLayer, trackLayer };
 
         // Helper to create a solid color texture
         Texture2D CreateSolidColorTexture(Color color) {
@@ -88,19 +145,32 @@ public class SceneSetup : MonoBehaviour {
             return tex;
         }
 
-        // Paint a road down the center
+        // --- Paint track texture ---
         float[,,] alphas = new float[size, size, 2];
         for (int x = 0; x < size; x++) {
             for (int y = 0; y < size; y++) {
-                float roadCenter = size / 2;
-                float roadWidth = size / 8;
-                float dist = Mathf.Abs(y - roadCenter);
-                float t = Mathf.Clamp01(1f - (dist / roadWidth));
+                float minDist = 9999f;
+                for (int i = 0; i < numPoints; i++) {
+                    float d = Vector2.Distance(new Vector2(x, y), trackPoints[i]);
+                    if (d < minDist) minDist = d;
+                }
+                float t = Mathf.Clamp01(1f - (minDist / (trackWidth / 1.6f)));
                 alphas[x, y, 0] = 1f - t; // Grass
-                alphas[x, y, 1] = t;      // Road
+                alphas[x, y, 1] = t;      // Track
             }
         }
         terrainData.SetAlphamaps(0, 0, alphas);
+
+        // --- TODO: Implement option to save the generated track (heightmap/path) to file after a drive ---
+    }
+
+    // Helper to estimate angle between track segments (for berms)
+    private float angleBetween(Vector2[] pts, int i) {
+        int prev = (i - 1 + pts.Length) % pts.Length;
+        int next = (i + 1) % pts.Length;
+        Vector2 a = (pts[i] - pts[prev]).normalized;
+        Vector2 b = (pts[next] - pts[i]).normalized;
+        return Mathf.Acos(Mathf.Clamp(Vector2.Dot(a, b), -1f, 1f));
     }
     
     /// <summary>
