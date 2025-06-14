@@ -120,6 +120,10 @@ jobs:
         with:
           targetPlatform: ${{ inputs.targetPlatform }}
 
+      - name: Fix permissions for build output
+        run: |
+          sudo chown -R $USER:$USER build/${{ inputs.targetPlatform }}
+
       - name: Copy static public assets (e.g., favicon)
         run: |
           if [ -d public ]; then
