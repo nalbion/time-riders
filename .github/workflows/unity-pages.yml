@@ -23,45 +23,55 @@ jobs:
         with:
           lfs: true
 
-      - name: Cache Library
-        uses: actions/cache@v4
+      - name: Generate .alf license request file
+        run: |
+          mkdir -p unity_license
+          unity-editor -batchmode -nographics -createManualActivationFile -manualLicenseFile unity_license/Unity_v2023.alf
+      - name: Upload .alf
+        uses: actions/upload-artifact@v4
         with:
-          path: Library
-          key: Library-${{ runner.os }}-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
-          # key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-
+          name: unity-alf
+          path: unity_license/Unity_v2023.alf
 
-      # Test
-      - name: Run tests
-        uses: game-ci/unity-test-runner@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Cache Library
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: Library
+      #     key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+      #     restore-keys: |
+      #       Library-
+      #     # key: Library-${{ runner.os }}-${{ hashFiles('**/ProjectSettings/ProjectVersion.txt') }}
 
-      # Build
-      - name: Build project
-        uses: game-ci/unity-builder@v4
-        env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
-          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
-          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
-        with:
-          targetPlatform: WebGL
+      # # Test
+      # - name: Run tests
+      #   uses: game-ci/unity-test-runner@v4
+      #   env:
+      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #   with:
+      #     githubToken: ${{ secrets.GITHUB_TOKEN }}
 
-      # Output
-      - uses: actions/upload-artifact@v4
-        with:
-          name: Build
-          path: build
+      # # Build
+      # - name: Build project
+      #   uses: game-ci/unity-builder@v4
+      #   env:
+      #     UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+      #     UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+      #     UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      #   with:
+      #     targetPlatform: WebGL
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: build/WebGL/WebGL
-          publish_branch: gh-pages
-          force_orphan: true
+      # # Output
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Build
+      #     path: build
+
+      # - name: Deploy to GitHub Pages
+      #   uses: peaceiris/actions-gh-pages@v4
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     publish_dir: build/WebGL/WebGL
+      #     publish_branch: gh-pages
+      #     force_orphan: true
