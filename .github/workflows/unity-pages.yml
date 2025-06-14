@@ -12,7 +12,7 @@ on:
 
 jobs:
   testRunner:
-    name: Test in ${{ matrix.testMode }} ✨
+    name: Test in ${{ matrix.testMode }} ✅
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
