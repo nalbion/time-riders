@@ -6,6 +6,12 @@
       {
         "source": "**/*.br",
         "headers": [
+          { "key": "Content-Encoding", "value": "br" }
+        ]
+      },
+      {
+        "source": "**/*.js.br",
+        "headers": [
           { "key": "Content-Type", "value": "application/javascript; charset=UTF-8" },
           { "key": "Content-Encoding", "value": "br" }
         ]
@@ -13,6 +19,13 @@
       {
         "source": "**/*.gz",
         "headers": [
+          { "key": "Content-Encoding", "value": "gzip" }
+        ]
+      },
+      {
+        "source": "**/*.js.gz",
+        "headers": [
+          { "key": "Content-Type", "value": "application/javascript; charset=UTF-8" },
           { "key": "Content-Encoding", "value": "gzip" }
         ]
       },
