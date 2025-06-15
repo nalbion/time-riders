@@ -79,10 +79,9 @@ public class PlayerController : MonoBehaviour
         HandleInput();
         UpdateWheelMeshes();
         CheckGrounded();
-        currentSpeed = rb.linearVelocity.magnitude * 3.6f; // Convert to km/h
+        currentSpeed = rb.velocity.magnitude * 3.6f; // Convert to km/h
         // GameLogger.Info("PlayerController", $"Speed: {currentSpeed:F2} km/h, MotorInput: {motorInput:F2}");
 
-        ApplyBankingAndStability();
     }
 
     // Helper to check if we should consider the bike grounded (with coyote time)
@@ -111,7 +110,7 @@ public class PlayerController : MonoBehaviour
         }
         // --- Gentle banking into corners ---
         float targetBank = -steerInput * Mathf.Clamp(currentSpeed / 60f, 0f, 1f) * 15f; // up to 15 degrees
-        Quaternion targetRotation = Quaternion.Euler(0f, transform.eulerAngles.y, targetBank);
+        Quaternion targetRotation = Quaternion.Euler(transform.eulerAngles.x, transform.eulerAngles.y, targetBank);
         Quaternion currentRotation = transform.rotation;
         Quaternion desiredRotation = Quaternion.Lerp(currentRotation, targetRotation, Time.deltaTime * bankingStrength);
         rb.MoveRotation(desiredRotation);
@@ -122,6 +121,7 @@ public class PlayerController : MonoBehaviour
         ApplyMotor();
         ApplySteering();
         ApplyBraking();
+        ApplyBankingAndStability();
     }
     
     void HandleInput()
@@ -171,7 +171,7 @@ public class PlayerController : MonoBehaviour
     }
     
     void ApplyMotor() {
-        float speed = rb.linearVelocity.magnitude;
+        float speed = rb.velocity.magnitude;
         float motor = motorInput * maxSpeed;
         
         // --- Uphill/low-speed boost ---
@@ -194,7 +194,7 @@ public class PlayerController : MonoBehaviour
     }
     
     void ApplySteering() {
-        float speed = rb.linearVelocity.magnitude;
+        float speed = rb.velocity.magnitude;
         // At low speed, increase steering influence (up to 3x at zero speed)
         float steerMultiplier = Mathf.Lerp(3f, 1f, Mathf.Clamp01(speed / 8f));
         float steering = steerInput * turnSpeed * steerMultiplier;
@@ -308,7 +308,7 @@ public class PlayerController : MonoBehaviour
     public void ResetToStartPosition() {
         transform.position = startPosition;
         transform.rotation = startRotation;
-        rb.linearVelocity = Vector3.zero;
+        rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
     }
     
@@ -329,11 +329,11 @@ public class PlayerController : MonoBehaviour
         if (other.CompareTag("Obstacle")) {
             TakeDamage(20f);
             // Slow down the bike
-            rb.linearVelocity *= 0.5f;
+            rb.velocity *= 0.5f;
         }
         else if (other.CompareTag("NPC")) {
             TakeDamage(15f);
-            rb.linearVelocity *= 0.7f;
+            rb.velocity *= 0.7f;
         }
         else if (other.CompareTag("Finish")) {
             if (gameManager) {
