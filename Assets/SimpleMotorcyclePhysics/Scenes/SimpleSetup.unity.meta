@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 710d77d2f2c2e1b459434f9c1fa8a855
+DefaultImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Scenes/SimpleSetup.unity
+  uploadId: 462108

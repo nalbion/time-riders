@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: cd9e90ccf08bae74aa61d8797586998f
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Prefabs/Rider  Ragdoll.prefab
+  uploadId: 462108

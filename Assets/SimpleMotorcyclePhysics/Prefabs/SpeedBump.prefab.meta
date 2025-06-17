@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: 721f41d3961fc3f4eb4b2a827eef5665
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Prefabs/SpeedBump.prefab
+  uploadId: 462108

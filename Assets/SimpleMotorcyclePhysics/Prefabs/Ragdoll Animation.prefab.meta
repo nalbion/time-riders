@@ -1,0 +1,14 @@
+fileFormatVersion: 2
+guid: a940ea4ebb45c9b45b7cf112fa49b7ae
+PrefabImporter:
+  externalObjects: {}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Prefabs/Ragdoll Animation.prefab
+  uploadId: 462108

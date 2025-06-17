@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6f22d9e973ad0064bab04926dbc9d423
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2655988077585873504
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Audio/BikeSoundDesign_1.preset
+  uploadId: 462108

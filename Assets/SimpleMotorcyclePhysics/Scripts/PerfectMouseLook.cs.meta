@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 86c9ceab9f5ae504ba0a217a7b171e7e
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Scripts/PerfectMouseLook.cs
+  uploadId: 462108

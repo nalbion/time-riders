@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f12f49301e5e1a641a1d6d603c428e5f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Materials/Metal Brakes.001.mat
+  uploadId: 462108

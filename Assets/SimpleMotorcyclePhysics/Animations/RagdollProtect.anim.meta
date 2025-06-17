@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: f21ad3ee45e262343a8157476f578db4
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Animations/RagdollProtect.anim
+  uploadId: 462108

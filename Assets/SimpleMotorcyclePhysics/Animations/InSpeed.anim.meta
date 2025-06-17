@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 6a350e56552de9842908743f058d459f
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Animations/InSpeed.anim
+  uploadId: 462108

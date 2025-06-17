@@ -2,6 +2,7 @@
     "name": "GameRuntime",
     "references": [
         "Unity.TextMeshPro",
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "SimpleMotorcyclePhysics"
     ]
 }

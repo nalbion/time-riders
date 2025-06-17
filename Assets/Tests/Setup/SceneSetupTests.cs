@@ -14,7 +14,7 @@ public class SceneSetupTests
         var go = new GameObject("SceneSetup");
         var setup = go.AddComponent<SceneSetup>();
         setup.CreateBasicTerrain();
-        var terrain = GameObject.FindObjectOfType<Terrain>();
+        var terrain = GameObject.FindFirstObjectByType<Terrain>();
         Assert.IsNotNull(terrain, "Terrain should be created by SceneSetup");
     }
 }

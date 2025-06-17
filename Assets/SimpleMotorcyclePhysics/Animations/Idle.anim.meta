@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 816e100a16c32294f99421afb2877e4e
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 188854
+  packageName: Simple Motorcycle Physics Pro
+  packageVersion: 1.2.9
+  assetPath: Assets/Simple Motorcycle Physics/Animations/Idle.anim
+  uploadId: 462108
