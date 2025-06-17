@@ -94,8 +94,7 @@ public class SimpleMotorbikeController : MonoBehaviour {
     }
 
 
-    void FixedUpdate()
-    {
+    void FixedUpdate() {
         uprightCheck();
         if (fallen == false)
             uprightForce();
@@ -106,13 +105,11 @@ public class SimpleMotorbikeController : MonoBehaviour {
         if ((Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)) input.steer += 1;
         if ((Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)) input.steer -= 1;
 
-        if ((Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed))
-        {
+        if ((Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)) {
             input.brakeBack = 0.3f;
             input.brakeForward = 0.5f;
         }
-        if (Keyboard.current.spaceKey.isPressed)
-        {
+        if (Keyboard.current.spaceKey.isPressed) {
             input.brakeForward = 1f;
         }
 
@@ -130,8 +127,7 @@ public class SimpleMotorbikeController : MonoBehaviour {
         }
 
         //Bug fix stationary wheel rotates on asphalt
-        if (speedVal < 0.5f && !(Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)) // or UP ARROW
-        {
+        if (speedVal < 0.5f && !(Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)) { // or UP ARROW
             WColForward.steerAngle = 0;
             WColBack.steerAngle = 0;
         }
@@ -141,8 +137,7 @@ public class SimpleMotorbikeController : MonoBehaviour {
         Time.timeScale = 1.15f; //Makes simulation movement more agile. You can delete this line if it interferes with your project settings.
     }
 
-    private void reset()
-    {
+    private void reset() {
         Transform t = GetComponent<Transform>();
         t.position = t.position + new Vector3(0, 0.1f, 0);
         t.eulerAngles = new Vector3(0, transform.rotation.eulerAngles.y, 0);
@@ -192,8 +187,8 @@ public class SimpleMotorbikeController : MonoBehaviour {
 
         return input;
     }
-    private void uprightForce()
-    {
+
+    private void uprightForce() {
         rb.angularDamping -= 100 * Time.deltaTime;
         rb.angularDamping = Mathf.Clamp(rb.angularDamping, 0, 100);
 
@@ -228,15 +223,13 @@ public class SimpleMotorbikeController : MonoBehaviour {
 
 
         rb.centerOfMass = com;
-
-
     }
+
     public void uprightCheck() {
         var turnAngle = transform.eulerAngles.z;
         if (transform.eulerAngles.z > 180)
             turnAngle = transform.eulerAngles.z - 360;
-        if (Mathf.Abs(turnAngle) > preventGlitchAngle)
-        {
+        if (Mathf.Abs(turnAngle) > preventGlitchAngle) {
             fallen = true;
             Debug.Log("Crashed & Reseted");
         }
@@ -279,16 +272,17 @@ public class SimpleMotorbikeController : MonoBehaviour {
 
         }
     }
-    private void steerHandles()
-    {
+    
+    private void steerHandles() {
         handles.transform.localRotation = Quaternion.Euler(0, Mathf.Lerp(handles.transform.localRotation.y, WColForward.steerAngle, Time.deltaTime * 10), 0);
     }
-    private void RearMudGuardSuspension()
-    {
+
+    private void RearMudGuardSuspension() {
         WheelHit hit;
         if (WColBack.GetGroundHit(out hit))
             RearMudGuard.transform.rotation = Quaternion.LookRotation(transform.position - wheelB.transform.position - RearMudGuardSusOffset, transform.forward);
     }
+    
     private void CalcStoppie() {
         var stoppieAngle = transform.eulerAngles.x;
         if (transform.eulerAngles.x > 180)
