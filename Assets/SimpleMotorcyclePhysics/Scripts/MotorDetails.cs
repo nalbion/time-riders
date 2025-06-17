@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MotorDetails : MonoBehaviour
-{
+public class MotorDetails : MonoBehaviour {
     MotorbikeController motorbikeController;
     GameObject t1,t2,t3,t4,t5;
     GameObject c1,c2;
     WheelHit hit;
-    void Start()
-    {
+
+    void Start() {
         motorbikeController = FindFirstObjectByType<MotorbikeController>();
         t1 = GameObject.Find("Velocity");
         t2 = GameObject.Find("Lean");
@@ -19,12 +18,10 @@ public class MotorDetails : MonoBehaviour
         t5 = GameObject.Find("Rear");
         c1 = GameObject.Find("/MotorcycleWRider/WheelHolderForward/WCollider");
         c2 = GameObject.Find("/MotorcycleWRider/WheelHolderBack/WCollider");
-
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
         var realSpeed = motorbikeController.GetComponent<Rigidbody>().linearVelocity.magnitude*2;
         t1.GetComponent<Text>().text = "Velocity [Km/h] : " + realSpeed;
         if(realSpeed>90)

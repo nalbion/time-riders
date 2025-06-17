@@ -42,10 +42,7 @@ public class HelicopterCamera : MonoBehaviour
     MotorbikeController motorbikeController;
     bool changed,prevFallen;
 
-
-
-    void Start()
-    {
+    void Start() {
         perfectMouseLook = GetComponent<PerfectMouseLook>();
         initialdistanceMultiplier = distanceMultiplier;
         target = PrimaryTarget.transform;
@@ -53,22 +50,19 @@ public class HelicopterCamera : MonoBehaviour
         motorbikeController = FindFirstObjectByType<MotorbikeController>();
     }
 
-    void LateUpdate()
-    {
+    void LateUpdate() {
         if(motorbikeController.fallen!=prevFallen)
         changed = false;
         prevFallen = motorbikeController.fallen;
         
-        if (motorbikeController.fallen && changed == false)
-        {
+        if (motorbikeController.fallen && changed == false) {
             if(SecondaryTarget == null)
             target = GameObject.FindGameObjectWithTag("Ragdoll").transform.Find("Armature/Hips");
             parentRigidbody = target.gameObject.GetComponent<Rigidbody>();
             changed = true;
         }
 
-        else if(motorbikeController.fallen == false && changed == false)
-        {
+        else if(motorbikeController.fallen == false && changed == false) {
             target = PrimaryTarget.transform;
             parentRigidbody = PrimaryTarget.GetComponent<Rigidbody>();
             changed = true;
@@ -79,8 +73,7 @@ public class HelicopterCamera : MonoBehaviour
 
         wantedRotationAngle = target.eulerAngles.y;
         currentRotationAngle = transform.eulerAngles.y;
-        if (counterRotation)
-        {
+        if (counterRotation) {
             if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
                 LateRot += 0.333f;
             else if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
@@ -107,11 +100,7 @@ public class HelicopterCamera : MonoBehaviour
         wantedPosition += Quaternion.Euler(0, currentRotationAngle, 0) * new Vector3(0, 0, -usedDistance);
         lookAtVector = new Vector3(0, lookAtHeight, 0);
 
-
         transform.position = wantedPosition;
-
         transform.LookAt(target.position + lookAtVector);
-
     }
-
 }

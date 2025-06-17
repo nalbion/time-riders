@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
 
@@ -69,3 +70,4 @@ public class ChangeBike : EditorWindow {
         EditorUtility.SetDirty(player.gameObject);
     }
 }
+#endif
