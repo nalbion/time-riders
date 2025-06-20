@@ -31,17 +31,11 @@ A Unity 6.1 web-based motorbike racing game featuring accessibility options, cha
    - TextMeshPro
    - Unity Input System (optional)
 4. Open the Main scene
-5. Build for WebGL platform
+5. Build and Run
 
 ### Building for Web
-1. Go to File > Build Settings
-2. Select WebGL platform
-3. Add all scenes to build
-4. Configure Player Settings:
-   - Company Name: Your Name
-   - Product Name: Time Riders
-   - WebGL Template: Default or Minimal
-5. Build and deploy to web server
+1. Go to File > Build and Run
+2. The game will be available at http://localhost:53353
 
 ## 🎯 Gameplay
 
