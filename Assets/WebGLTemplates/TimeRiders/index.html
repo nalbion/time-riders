@@ -100,6 +100,20 @@
         meta.name = 'viewport';
         meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
         document.getElementsByTagName('head')[0].appendChild(meta);
+
+        // iOS requires an explicit permission request for motion controls
+        if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+          var requestMotionPermission = function () {
+            DeviceMotionEvent.requestPermission().catch(function(){});
+            if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+              DeviceOrientationEvent.requestPermission().catch(function(){});
+            }
+            window.removeEventListener('touchend', requestMotionPermission);
+            window.removeEventListener('click', requestMotionPermission);
+          };
+          window.addEventListener('touchend', requestMotionPermission, { once: true });
+          window.addEventListener('click', requestMotionPermission, { once: true });
+        }
       }
 
 #if SHOW_DIAGNOSTICS
