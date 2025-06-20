@@ -6,8 +6,8 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Track.unity
-    guid: c628d683c4b282b40a78069e396fca24
+    path: Assets/SimpleMotorcyclePhysics/Scenes/SimpleSetup.unity
+    guid: 0a9d4d7b2c0f54b4e9a9e1e6c5a7b6c2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
