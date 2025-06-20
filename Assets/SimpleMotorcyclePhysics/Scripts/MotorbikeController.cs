@@ -93,6 +93,8 @@ public class MotorbikeController : MonoBehaviour {
         wheels[0] = new WheelData(wheelF, WColForward);
         wheels[1] = new WheelData(wheelB, WColBack);
 
+        Input.gyro.enabled = true;
+
         thisTransform = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
         rb.centerOfMass = com;
