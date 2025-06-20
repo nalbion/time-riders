@@ -122,10 +122,10 @@ public class MotorbikeController : MonoBehaviour {
                 // --- Touch drag controls ---
                 if (Input.touchCount > 0) {
                     Touch touch = Input.GetTouch(0);
-                    if (touch.phase == TouchPhase.Began) {
+                    if (touch.phase == UnityEngine.TouchPhase.Began) {
                         touchStartPos = touch.position;
                         isDragging = true;
-                    } else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary) {
+                    } else if (touch.phase == UnityEngine.TouchPhase.Moved || touch.phase == UnityEngine.TouchPhase.Stationary) {
                         if (isDragging) {
                             Vector2 delta = touch.position - touchStartPos;
                             // Sensitivity can be tweaked for best feel
@@ -138,7 +138,7 @@ public class MotorbikeController : MonoBehaviour {
                                 input.brakeForward = -dragThrottle;
                             }
                         }
-                    } else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) {
+                    } else if (touch.phase == UnityEngine.TouchPhase.Ended || touch.phase == UnityEngine.TouchPhase.Canceled) {
                         isDragging = false;
                         dragSteer = 0f;
                         dragThrottle = 0f;
