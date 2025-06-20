@@ -100,6 +100,13 @@ public class MotorbikeController : MonoBehaviour {
         initialMotorTorque = maxMotorTorque;
     }
 
+    // --- Touch drag state for mobile controls ---
+    private Vector2 touchStartPos;
+    private bool isDragging = false;
+    private float lastTouchTime = 0f;
+    private float dragSteer = 0f;
+    private float dragThrottle = 0f;
+
     void FixedUpdate() {
         turnAngle = transform.eulerAngles.z;
         if (transform.eulerAngles.z > 180)
@@ -112,14 +119,42 @@ public class MotorbikeController : MonoBehaviour {
             var input = new MotorbikeInput();
 
             if (Application.isMobilePlatform) {
-                // Mobile tilt controls: X = steer, -Y = accel/brake
-                float tiltX = Input.acceleration.x; // left/right
-                float tiltY = -Input.acceleration.y; // up = forward (landscape mode)
-                input.steer = Mathf.Clamp(tiltX * 2f, -1f, 1f); // Sensitivity tweakable
-                if (tiltY > 0.1f) {
-                    input.acceleration = Mathf.Clamp01(tiltY); // Forward tilt = throttle
-                } else if (tiltY < -0.1f) {
-                    input.brakeForward = Mathf.Clamp01(-tiltY); // Backward tilt = brake
+                // --- Touch drag controls ---
+                if (Input.touchCount > 0) {
+                    Touch touch = Input.GetTouch(0);
+                    if (touch.phase == TouchPhase.Began) {
+                        touchStartPos = touch.position;
+                        isDragging = true;
+                    } else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary) {
+                        if (isDragging) {
+                            Vector2 delta = touch.position - touchStartPos;
+                            // Sensitivity can be tweaked for best feel
+                            dragSteer = Mathf.Clamp(delta.x / (Screen.width * 0.3f), -1f, 1f);
+                            dragThrottle = Mathf.Clamp(delta.y / (Screen.height * 0.3f), -1f, 1f);
+                            input.steer = dragSteer;
+                            if (dragThrottle > 0.1f) {
+                                input.acceleration = dragThrottle;
+                            } else if (dragThrottle < -0.1f) {
+                                input.brakeForward = -dragThrottle;
+                            }
+                        }
+                    } else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) {
+                        isDragging = false;
+                        dragSteer = 0f;
+                        dragThrottle = 0f;
+                    }
+                    lastTouchTime = Time.time;
+                }
+                // If not dragging, fallback to tilt controls
+                else {
+                    float tiltX = Input.acceleration.x; // left/right
+                    float tiltY = -Input.acceleration.y; // up = forward (landscape mode)
+                    input.steer = Mathf.Clamp(tiltX * 2f, -1f, 1f); // Sensitivity tweakable
+                    if (tiltY > 0.1f) {
+                        input.acceleration = Mathf.Clamp01(tiltY);
+                    } else if (tiltY < -0.1f) {
+                        input.brakeForward = Mathf.Clamp01(-tiltY);
+                    }
                 }
             } else {
                 // Keyboard/gamepad controls
