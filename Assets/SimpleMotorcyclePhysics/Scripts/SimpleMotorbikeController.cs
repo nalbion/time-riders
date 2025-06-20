@@ -101,16 +101,29 @@ public class SimpleMotorbikeController : MonoBehaviour {
 
         var input = new MotorbikeInput();
 
-        if ((Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)) input.acceleration = 1;
-        if ((Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)) input.steer += 1;
-        if ((Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)) input.steer -= 1;
+        if (Application.isMobilePlatform) {
+            // Mobile tilt controls: X = steer, -Y = accel/brake
+            float tiltX = Input.acceleration.x; // left/right
+            float tiltY = -Input.acceleration.y; // up = forward (landscape mode)
+            input.steer = Mathf.Clamp(tiltX * 2f, -1f, 1f); // Sensitivity tweakable
+            if (tiltY > 0.1f) {
+                input.acceleration = Mathf.Clamp01(tiltY); // Forward tilt = throttle
+            } else if (tiltY < -0.1f) {
+                input.brakeForward = Mathf.Clamp01(-tiltY); // Backward tilt = brake
+            }
+        } else {
+            // Keyboard/gamepad controls
+            if ((Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)) input.acceleration = 1;
+            if ((Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)) input.steer += 1;
+            if ((Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)) input.steer -= 1;
 
-        if ((Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)) {
-            input.brakeBack = 0.3f;
-            input.brakeForward = 0.5f;
-        }
-        if (Keyboard.current.spaceKey.isPressed) {
-            input.brakeForward = 1f;
+            if ((Keyboard.current.sKey.isPressed || Keyboard.current.downArrowKey.isPressed)) {
+                input.brakeBack = 0.3f;
+                input.brakeForward = 0.5f;
+            }
+            if (Keyboard.current.spaceKey.isPressed) {
+                input.brakeForward = 1f;
+            }
         }
 
         motoMove(motoControl(input));

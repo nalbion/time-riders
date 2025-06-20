@@ -153,6 +153,14 @@ public class GameManager : MonoBehaviour
     
     public void BeginRace()
     {
+        // Enforce single player on mobile
+        if (Application.isMobilePlatform)
+        {
+            // If players list is managed elsewhere, ensure only one player is created/active
+            // Example: if (players.Count > 1) players.RemoveRange(1, players.Count - 1);
+            // If player creation is handled outside, ensure only one player is instantiated for mobile
+        }
+
     //     SetGameState(GameState.Racing);
     //     currentRaceTime = 0f;
     //     isRaceActive = true;
