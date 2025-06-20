@@ -118,7 +118,7 @@ public class MotorbikeController : MonoBehaviour {
             uprightForce();
             var input = new MotorbikeInput();
 
-            if (Application.isMobilePlatform) {
+            if (Application.isMobilePlatform || Input.touchSupported) {
                 // --- Touch drag controls ---
                 if (Input.touchCount > 0) {
                     Touch touch = Input.GetTouch(0);
