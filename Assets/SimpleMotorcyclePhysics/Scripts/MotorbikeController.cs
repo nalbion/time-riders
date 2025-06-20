@@ -147,8 +147,10 @@ public class MotorbikeController : MonoBehaviour {
                 }
                 // If not dragging, fallback to tilt controls
                 else {
-                    float tiltX = Input.acceleration.x; // left/right
-                    float tiltY = -Input.acceleration.y; // up = forward (landscape mode)
+                    float tiltX = Input.gyro.attitude.x; // left/right
+                    float tiltY = Input.gyro.attitude.y; // up = forward (landscape mode)
+                    // float tiltX = Input.acceleration.x; // left/right
+                    // float tiltY = -Input.acceleration.y; // up = forward (landscape mode)
                     input.steer = Mathf.Clamp(tiltX * 2f, -1f, 1f); // Sensitivity tweakable
                     if (tiltY > 0.1f) {
                         input.acceleration = Mathf.Clamp01(tiltY);
