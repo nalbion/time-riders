@@ -5,6 +5,7 @@ using System.Numerics;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
+using Vector3 = UnityEngine.Vector3;
 
 
 public class MotorbikeController : MonoBehaviour {
