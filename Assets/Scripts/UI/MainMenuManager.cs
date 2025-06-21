@@ -20,19 +20,58 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private Text lastTrackText;
     [SerializeField] private Image lastCharacterPortrait;
     
+    private void Awake()
+    {
+        AutoAssignButtonReferences();
+        ApplyButtonStyling();
+    }
+    
     private void Start() 
     {
+        Debug.Log("MainMenuManager Start() called");
         SetupUI();
         LoadPreviousGameData();
     }
     
     private void SetupUI() 
     {
-        // Setup button listeners
-        startRaceButton.onClick.AddListener(StartRaceWithPreviousConfig);
-        newGameButton.onClick.AddListener(StartNewGame);
-        settingsButton.onClick.AddListener(OpenSettings);
-        exitButton.onClick.AddListener(ExitGame);
+        Debug.Log("MainMenuManager SetupUI() called");
+        DebugButtonReferences();
+        
+        // Setup button listeners with null checks
+        if (startRaceButton != null)
+        {
+            startRaceButton.onClick.AddListener(StartRaceWithPreviousConfig);
+            Debug.Log("Added listener to startRaceButton");
+        }
+        else
+            Debug.LogError("startRaceButton is not assigned in the Inspector!");
+            
+        if (newGameButton != null)
+        {
+            newGameButton.onClick.AddListener(StartNewGame);
+            Debug.Log("Added listener to newGameButton");
+        }
+        else
+            Debug.LogError("newGameButton is not assigned in the Inspector!");
+            
+        if (settingsButton != null)
+        {
+            settingsButton.onClick.AddListener(OpenSettings);
+            Debug.Log("Added listener to settingsButton");
+        }
+        else
+            Debug.LogError("settingsButton is not assigned in the Inspector!");
+            
+        if (exitButton != null)
+        {
+            exitButton.onClick.AddListener(ExitGame);
+            Debug.Log("Added listener to exitButton");
+        }
+        else
+            Debug.LogError("exitButton is not assigned in the Inspector!");
+        
+        Debug.Log("SetupUI() completed - all button listeners should be active now");
         
         // Configure UI based on mobile detection
         if (PlatformDetector.IsMobilePlatform) 
@@ -104,6 +143,8 @@ public class MainMenuManager : MonoBehaviour
     
     private void StartRaceWithPreviousConfig() 
     {
+        Debug.Log("START RACE button clicked!");
+        
         // Load previous selections into SelectionData
         if (PlayerPrefs.HasKey("LastCharacter")) 
         {
@@ -124,17 +165,28 @@ public class MainMenuManager : MonoBehaviour
     
     private void StartNewGame() 
     {
-        SceneManager.LoadScene("CharacterSelect");
+        Debug.Log("NEW GAME button clicked!");
+        
+        // Clear any previous selection data
+        SelectionData.SelectedCharacter = null;
+        SelectionData.SelectedTrack = 0;
+        SelectionData.SelectedGameMode = 0; // Single player
+        
+        // Load character selection scene
+        UnityEngine.SceneManagement.SceneManager.LoadScene("CharacterSelection");
     }
     
     private void OpenSettings() 
     {
-        // TODO: Implement settings screen
-        Debug.Log("Settings menu - TODO: Implement");
+        Debug.Log("SETTINGS button clicked!");
+        // TODO: Implement settings menu
+        // For now, just log that it was clicked
     }
     
     private void ExitGame() 
     {
+        Debug.Log("EXIT button clicked!");
+        
         #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
         #else
@@ -147,5 +199,114 @@ public class MainMenuManager : MonoBehaviour
         int trackIndex = SelectionData.SelectedTrack;
         string sceneName = trackIndex == 0 ? "SimpleSetup" : "RagdollSetup";
         SceneManager.LoadScene($"Assets/SimpleMotorcyclePhysics/Scenes/{sceneName}.unity");
+    }
+    
+    private void ApplyButtonStyling() 
+    {
+        // Get or create ButtonStyleManager
+        ButtonStyleManager styleManager = FindFirstObjectByType<ButtonStyleManager>();
+        if (styleManager == null)
+        {
+            GameObject styleManagerGO = new GameObject("ButtonStyleManager");
+            styleManager = styleManagerGO.AddComponent<ButtonStyleManager>();
+        }
+        
+        // Apply styling to each button with appropriate categories
+        if (startRaceButton != null)
+            styleManager.ApplyButtonCategory(startRaceButton, ButtonCategory.Primary);
+        if (newGameButton != null)
+            styleManager.ApplyButtonCategory(newGameButton, ButtonCategory.Primary);
+        if (settingsButton != null)
+            styleManager.ApplyButtonCategory(settingsButton, ButtonCategory.Secondary);
+        if (exitButton != null)
+            styleManager.ApplyButtonCategory(exitButton, ButtonCategory.Danger);
+            
+        Debug.Log("Applied button visual effects to MainMenu buttons");
+    }
+    
+    private void AutoAssignButtonReferences()
+    {
+        Debug.Log("Auto-assigning button references...");
+        
+        // Find all buttons in the scene
+        Button[] allButtons = FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        
+        foreach (Button button in allButtons)
+        {
+            Text buttonText = button.GetComponentInChildren<Text>();
+            if (buttonText == null) continue;
+            
+            string textContent = buttonText.text.ToLower();
+            string buttonName = button.name.ToLower();
+            
+            // Match button text content or object name to assign references
+            if ((textContent.Contains("new game") || buttonName.Contains("newgame")) && newGameButton == null)
+            {
+                newGameButton = button;
+                Debug.Log($"Auto-assigned NEW GAME button: {button.name}");
+            }
+            else if ((textContent.Contains("start") || textContent.Contains("race") || buttonName.Contains("start")) && startRaceButton == null)
+            {
+                startRaceButton = button;
+                Debug.Log($"Auto-assigned START RACE button: {button.name}");
+            }
+            else if ((textContent.Contains("settings") || textContent.Contains("options") || buttonName.Contains("settings")) && settingsButton == null)
+            {
+                settingsButton = button;
+                Debug.Log($"Auto-assigned SETTINGS button: {button.name}");
+            }
+            else if ((textContent.Contains("exit") || textContent.Contains("quit") || buttonName.Contains("exit")) && exitButton == null)
+            {
+                exitButton = button;
+                Debug.Log($"Auto-assigned EXIT button: {button.name}");
+            }
+        }
+    }
+    
+    private void DebugButtonReferences()
+    {
+        Debug.Log("=== Button Reference Debug ===");
+        Debug.Log($"startRaceButton: {(startRaceButton != null ? startRaceButton.name : "NULL")}");
+        Debug.Log($"newGameButton: {(newGameButton != null ? newGameButton.name : "NULL")}");
+        Debug.Log($"settingsButton: {(settingsButton != null ? settingsButton.name : "NULL")}");
+        Debug.Log($"exitButton: {(exitButton != null ? exitButton.name : "NULL")}");
+        
+        // Also check how many buttons are in the scene
+        Button[] allButtons = FindObjectsByType<Button>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        Debug.Log($"Total buttons found in scene: {allButtons.Length}");
+        
+        foreach (Button button in allButtons)
+        {
+            Text buttonText = button.GetComponentInChildren<Text>();
+            string textContent = buttonText != null ? buttonText.text : "No Text";
+            Debug.Log($"Button: {button.name} | Text: '{textContent}' | Active: {button.gameObject.activeInHierarchy}");
+        }
+    }
+    
+    // Test method to manually trigger button clicks for debugging
+    [ContextMenu("Test Button Clicks")]
+    private void TestButtonClicks()
+    {
+        Debug.Log("=== Testing Button Clicks ===");
+        
+        if (newGameButton != null)
+        {
+            Debug.Log("Manually triggering NEW GAME button...");
+            newGameButton.onClick.Invoke();
+        }
+        else
+        {
+            Debug.LogError("Cannot test NEW GAME button - reference is null!");
+        }
+        
+        if (startRaceButton != null)
+        {
+            Debug.Log("Manually triggering START RACE button...");
+            startRaceButton.onClick.Invoke();
+        }
+        else
+        {
+            Debug.LogError("Cannot test START RACE button - reference is null!");
+        }
     }
 }

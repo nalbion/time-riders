@@ -45,8 +45,8 @@ public class BackgroundSetupHelper : EditorWindow
             return;
         }
         
-        // Find or create Canvas in current scene
-        Canvas canvas = FindObjectOfType<Canvas>();
+        // Find the Canvas in the scene
+        Canvas canvas = FindFirstObjectByType<Canvas>();
         if (canvas == null)
         {
             EditorUtility.DisplayDialog("Error", "No Canvas found in current scene. Please open the MainMenu scene first.", "OK");
@@ -118,7 +118,7 @@ public class BackgroundSetupHelper : EditorWindow
         importer.compressionQuality = 80; // Good balance of quality vs size
         importer.crunchedCompression = true;
         importer.streamingMipmaps = false;
-        importer.generateCubemap = TextureImporterGenerateCubemap.None;
+        importer.textureShape = TextureImporterShape.Texture2D; // Replaces deprecated generateCubemap
         
         // Apply settings
         AssetDatabase.ImportAsset(imagePath);
@@ -149,7 +149,8 @@ public class BackgroundSetupHelper : EditorWindow
             return;
         }
         
-        Canvas canvas = FindObjectOfType<Canvas>();
+        // Find the Canvas in the scene
+        Canvas canvas = FindFirstObjectByType<Canvas>();
         if (canvas == null)
         {
             EditorUtility.DisplayDialog("Error", "No Canvas found. Please open the MainMenu scene first.", "OK");

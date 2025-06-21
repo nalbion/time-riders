@@ -131,6 +131,7 @@ public class MotorbikeController : MonoBehaviour {
             var input = new MotorbikeInput();
 
             if (Touch.activeFingers.Count == 1) {
+                Debug.Log("Touch controls");
                 // --- Touch drag controls ---
                 Touch touch = Touch.activeTouches[0];
                 if (touch.phase == TouchPhase.Began) {
@@ -156,6 +157,7 @@ public class MotorbikeController : MonoBehaviour {
                 }
                 lastTouchTime = Time.time;
             } else if (AttitudeSensor.current != null) {
+                Debug.Log("Tilt controls");
                 // -- Tilt controls -- -
                 Quaternion rotation = AttitudeSensor.current.attitude.ReadValue();
                 float tiltX = rotation.x; // left/right
@@ -169,6 +171,7 @@ public class MotorbikeController : MonoBehaviour {
                     input.brakeForward = Mathf.Clamp01(-tiltY);
                 }
             } else {
+                Debug.Log("Keyboard controls");
                 // Keyboard/gamepad controls
                 if ((Keyboard.current.wKey.isPressed || Keyboard.current.upArrowKey.isPressed)) input.acceleration = 1;
                 if ((Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)) input.steer += 1;
