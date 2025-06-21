@@ -1,19 +1,26 @@
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "New Character", menuName = "Time Riders/Character")]
+/// <summary>
+/// Stores character selection data and stats for the Character Selection scene.
+/// </summary>
+[CreateAssetMenu(fileName = "CharacterData", menuName = "TimeRiders/Character Data", order = 0)]
 public class CharacterData : ScriptableObject
 {
+    [Header("General Info")]
     public string characterName;
-    public Sprite characterPortrait;
-    public GameObject characterPrefab;
+    [TextArea]
     public string description;
-    
-    [Header("Special Abilities")]
-    public float speedBonus = 0f;
-    public float healthBonus = 0f;
-    public float jumpBonus = 0f;
-    
-    [Header("Character Specific")]
-    public bool hasUniqueRidingStyle = false;
-    public string uniqueStyleDescription;
+    public Sprite portrait;
+
+    [Header("3D Model")]
+    [Tooltip("Character model prefab or GameObject to use in the motorcycle rider")]
+    public GameObject characterModel;
+
+    [Header("Stats")]
+    public int speed;
+    public int health;
+    public int jump;
+
+    [Header("Ability Summary")]
+    public string abilityDescription;
 }

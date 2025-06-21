@@ -26,7 +26,7 @@ public class CharacterSelector : MonoBehaviour
         
         if (selectedCharacterImage)
         {
-            selectedCharacterImage.sprite = character.characterPortrait;
+            selectedCharacterImage.sprite = character.portrait;
         }
     }
     
