@@ -20,6 +20,9 @@ trigger: always_on
 - Private methods
 - Nested types
 
+- DO NOT use the old Input Manager, alwaysuse the new Input System package
+- Use/extend `Assets/SimpleMotorcyclePhysics` for bike physics and bike controls, but any new code should be in `Assets/Scripts` etc
+
 ## Naming Conventions
 
 ### General
@@ -126,6 +129,8 @@ public bool Jump(float force) {
 - Use dependency injection for better testability
 
 ## Unity-Specific Guidelines
+
+- Any helper scripts created for the Unity Editor should be wrapped in `#if UNITY_EDITOR`
 
 ### Inspector Variables
 - Use `[Header]` and `[Tooltip]` attributes to organize the Inspector

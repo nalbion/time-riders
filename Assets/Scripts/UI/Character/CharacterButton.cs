@@ -28,7 +28,7 @@ public class CharacterButton : MonoBehaviour
     
     void SetupButton()
     {
-        characterImage.sprite = characterData.characterPortrait;
+        characterImage.sprite = characterData.portrait;
         characterNameText.text = characterData.characterName;
     }
     

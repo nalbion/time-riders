@@ -75,13 +75,11 @@ These are areas where assistance is particularly valuable:
 - Explicit access modifiers always included
 - Organize using statements alphabetically
 - Use LINQ for collection operations where appropriate
+- Any helper scripts created for the Unity Editor should be wrapped in `#if UNITY_EDITOR`
 
 ## Project-Specific Knowledge
-- `PlayerController`: Handles bike physics and user input
-- `GameManager`: Singleton that manages game state
-- `TerrainType`: Enum for different terrain surfaces
-- `WheelCollider`: Unity component used for bike wheels
-- `QuickPlayerSetup`: Helper for initial bike configuration
+- DO NOT use the old Input Manager, alwaysuse the new Input System package
+- Use/extend `Assets/SimpleMotorcyclePhysics` for bike physics and bike controls, but any new code should be in `Assets/Scripts` etc
 
 When providing suggestions, prioritize code that is:
 1. Easy to understand for beginners
