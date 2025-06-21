@@ -6,6 +6,7 @@ using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 using Vector3 = UnityEngine.Vector3;
+using Quaternion = UnityEngine.Quaternion;
 
 
 public class MotorbikeController : MonoBehaviour {
@@ -156,7 +157,7 @@ public class MotorbikeController : MonoBehaviour {
                 lastTouchTime = Time.time;
             } else if (AttitudeSensor.current != null) {
                 // -- Tilt controls -- -
-                UnityEngine.Quaternion rotation = AttitudeSensor.current.attitude.ReadValue();
+                Quaternion rotation = AttitudeSensor.current.attitude.ReadValue();
                 float tiltX = rotation.x; // left/right
                 float tiltY = -rotation.y; // up = forward (landscape mode)
                 // float tiltX = Input.acceleration.x; // left/right
