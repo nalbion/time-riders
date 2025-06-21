@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Manages the main menu/launch screen with quick replay and new game options
@@ -24,6 +25,7 @@ public class MainMenuManager : MonoBehaviour
     {
         AutoAssignButtonReferences();
         ApplyButtonStyling();
+        EnsureEventSystem();
     }
     
     private void Start() 
@@ -173,7 +175,7 @@ public class MainMenuManager : MonoBehaviour
         SelectionData.SelectedGameMode = 0; // Single player
         
         // Load character selection scene
-        UnityEngine.SceneManagement.SceneManager.LoadScene("CharacterSelection");
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Assets/Scenes/CharacterSelect");
     }
     
     private void OpenSettings() 
@@ -307,6 +309,28 @@ public class MainMenuManager : MonoBehaviour
         else
         {
             Debug.LogError("Cannot test START RACE button - reference is null!");
+        }
+    }
+    
+    private void EnsureEventSystem()
+    {
+        // Check if there is already an Event System in the scene
+        if (EventSystem.current == null)
+        {
+            Debug.Log("Creating EventSystem for New Input System");
+            
+            // Create a new Event System
+            GameObject eventSystem = new GameObject("EventSystem");
+            eventSystem.AddComponent<EventSystem>();
+            
+            // Use InputSystemUIInputModule for the new Input System
+            var inputModule = eventSystem.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+            
+            Debug.Log("EventSystem created with InputSystemUIInputModule");
+        }
+        else
+        {
+            Debug.Log("EventSystem already exists");
         }
     }
 }
