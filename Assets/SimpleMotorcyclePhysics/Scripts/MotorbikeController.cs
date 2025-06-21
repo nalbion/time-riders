@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.InputSystem;
+using System.Numerics;
+using UnityEngine.InputSystem.EnhancedTouch;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
+using TouchPhase = UnityEngine.InputSystem.TouchPhase;
 
 
 public class MotorbikeController : MonoBehaviour {
@@ -93,7 +97,11 @@ public class MotorbikeController : MonoBehaviour {
         wheels[0] = new WheelData(wheelF, WColForward);
         wheels[1] = new WheelData(wheelB, WColBack);
 
-        Input.gyro.enabled = true;
+        // Input.gyro.enabled = true;
+        if (AttitudeSensor.current != null) {
+            InputSystem.EnableDevice(AttitudeSensor.current);
+        }
+        EnhancedTouchSupport.Enable();
 
         thisTransform = GetComponent<Transform>();
         rb = GetComponent<Rigidbody>();
@@ -103,7 +111,7 @@ public class MotorbikeController : MonoBehaviour {
     }
 
     // --- Touch drag state for mobile controls ---
-    private Vector2 touchStartPos;
+    private UnityEngine.Vector2 touchStartPos;
     private bool isDragging = false;
     private float lastTouchTime = 0f;
     private float dragSteer = 0f;
@@ -120,45 +128,43 @@ public class MotorbikeController : MonoBehaviour {
             uprightForce();
             var input = new MotorbikeInput();
 
-            if (Application.isMobilePlatform || Input.touchSupported) {
+            if (Touch.activeFingers.Count == 1) {
                 // --- Touch drag controls ---
-                if (Input.touchCount > 0) {
-                    Touch touch = Input.GetTouch(0);
-                    if (touch.phase == UnityEngine.TouchPhase.Began) {
-                        touchStartPos = touch.position;
-                        isDragging = true;
-                    } else if (touch.phase == UnityEngine.TouchPhase.Moved || touch.phase == UnityEngine.TouchPhase.Stationary) {
-                        if (isDragging) {
-                            Vector2 delta = touch.position - touchStartPos;
-                            // Sensitivity can be tweaked for best feel
-                            dragSteer = Mathf.Clamp(delta.x / (Screen.width * 0.3f), -1f, 1f);
-                            dragThrottle = Mathf.Clamp(delta.y / (Screen.height * 0.3f), -1f, 1f);
-                            input.steer = dragSteer;
-                            if (dragThrottle > 0.1f) {
-                                input.acceleration = dragThrottle;
-                            } else if (dragThrottle < -0.1f) {
-                                input.brakeForward = -dragThrottle;
-                            }
+                Touch touch = Touch.activeTouches[0];
+                if (touch.phase == TouchPhase.Began) {
+                    touchStartPos = touch.screenPosition;
+                    isDragging = true;
+                } else if (touch.phase == TouchPhase.Moved || touch.phase == TouchPhase.Stationary) {
+                    if (isDragging) {
+                        UnityEngine.Vector2 delta = touch.screenPosition - touchStartPos;
+                        // Sensitivity can be tweaked for best feel
+                        dragSteer = Mathf.Clamp(delta.x / (Screen.width * 0.3f), -1f, 1f);
+                        dragThrottle = Mathf.Clamp(delta.y / (Screen.height * 0.3f), -1f, 1f);
+                        input.steer = dragSteer;
+                        if (dragThrottle > 0.1f) {
+                            input.acceleration = dragThrottle;
+                        } else if (dragThrottle < -0.1f) {
+                            input.brakeForward = -dragThrottle;
                         }
-                    } else if (touch.phase == UnityEngine.TouchPhase.Ended || touch.phase == UnityEngine.TouchPhase.Canceled) {
-                        isDragging = false;
-                        dragSteer = 0f;
-                        dragThrottle = 0f;
                     }
-                    lastTouchTime = Time.time;
+                } else if (touch.phase == TouchPhase.Ended || touch.phase == TouchPhase.Canceled) {
+                    isDragging = false;
+                    dragSteer = 0f;
+                    dragThrottle = 0f;
                 }
-                // If not dragging, fallback to tilt controls
-                else {
-                    float tiltX = Input.gyro.attitude.x; // left/right
-                    float tiltY = Input.gyro.attitude.y; // up = forward (landscape mode)
-                    // float tiltX = Input.acceleration.x; // left/right
-                    // float tiltY = -Input.acceleration.y; // up = forward (landscape mode)
-                    input.steer = Mathf.Clamp(tiltX * 2f, -1f, 1f); // Sensitivity tweakable
-                    if (tiltY > 0.1f) {
-                        input.acceleration = Mathf.Clamp01(tiltY);
-                    } else if (tiltY < -0.1f) {
-                        input.brakeForward = Mathf.Clamp01(-tiltY);
-                    }
+                lastTouchTime = Time.time;
+            } else if (AttitudeSensor.current != null) {
+                // -- Tilt controls -- -
+                UnityEngine.Quaternion rotation = AttitudeSensor.current.attitude.ReadValue();
+                float tiltX = rotation.x; // left/right
+                float tiltY = -rotation.y; // up = forward (landscape mode)
+                // float tiltX = Input.acceleration.x; // left/right
+                // float tiltY = -Input.acceleration.y; // up = forward (landscape mode)
+                input.steer = Mathf.Clamp(tiltX * 2f, -1f, 1f); // Sensitivity tweakable
+                if (tiltY > 0.1f) {
+                    input.acceleration = Mathf.Clamp01(tiltY);
+                } else if (tiltY < -0.1f) {
+                    input.brakeForward = Mathf.Clamp01(-tiltY);
                 }
             } else {
                 // Keyboard/gamepad controls
